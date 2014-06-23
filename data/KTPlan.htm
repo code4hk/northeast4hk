@@ -1,0 +1,756 @@
+﻿<!DOCTYPE html>
+<html>  
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no,  text/html; charset=UTF-8 "/>
+    <meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+    
+
+    <title>「人文啟德」 民間規劃方案 2013</title>
+    <!-- *** Replace the key below below with your own API key, available at http://code.google.com/apis/maps/signup.html *** -->
+	<style type="text/css">
+    
+      /* CSS sprites */
+      .tri-button {
+        overflow: hidden;
+      }
+      
+      .tri-button:hover {  opacity:0.6;}
+     
+    </style>
+    
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true&language=zh-TW"></script>
+    <script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael.js"></script>
+
+    
+    <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAwbkbZLyhsmTCWXbTcjbgbRSzHs7K5SvaUdm8ua-Xxy_-2dYwMxQMhnagaawTo7L1FE1-amhuQxIlXw"></script>
+    
+
+    
+    <script type="text/javascript" >
+        google.load("earth", "1");
+
+
+        //var ANGLE_TILT = 50;
+        //  var ANGLE_ROLL = 30;
+        var DEC_PLACE = 5;   // 10 metres
+
+
+        var P_LNG = new Array(114.210074, 114.198324, 114.193834, 114.211486, 114.203077);
+        var P_LAT = new Array(22.316781, 22.318635, 22.324978, 22.311330, 22.312807);
+        var P_HEADING = new Array(0, 350, 0, 340, 340);
+        var P_TILT = new Array(20, 40, 40, 40, 50);
+        var P_RANGE = new Array(6000, 1500, 1500, 1500, 1500);
+        var P_ZOOM = new Array(15, 16, 16, 16, 16);
+        var OPLAN_URL = "https://fbcdn-sphotos-b-a.akamaihd.net/hphotos-ak-prn1/67758_10151350786949595_199769395_n.jpg";
+        var NPLAN_URL = "https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-snc7/598563_10151350786984595_321406322_n.jpg";
+
+        var MAIN_RANGE = 4500;
+        var POINT_RANGE = 1500;
+        var MAIN_HEIGHT = 0;
+        var DEFAULT_TILT = 20;
+
+        var ZOOM13 = 13;
+        var RANGE13 = 12000;
+
+        var KT_NORTH =22.33672384;
+        var KT_SOUTH =22.30239431;
+        var KT_EAST = 114.2303409;
+        var KT_WEST = 114.1879649;
+
+
+        var gMap2D = null;
+        var gLoc;
+
+        var gMap3D = null;
+
+        var g3DSupport = true;
+
+        var gLocation;
+        var gGeoCoder;
+        var gAddress;
+        var gSearchLoc;
+        var gPlacemark;
+        var gLookat;
+        var gZoomLevel;
+
+      //  var MAIN_LNG = 114.210074;
+    //    var MAIN_LAT = 22.316781;
+       
+        var gNewPlan;
+        var gOldPlan;
+
+        var gDrawing;
+        var gCan;
+        var gCXT;
+        var g3DView;
+        
+        
+		/**
+		 * Helper function to get the rectangle for the given HTML element.
+		 */
+		function getElementRect(element) {
+		  var left = element.offsetLeft;
+		  var top = element.offsetTop;
+		  
+		  var p = element.offsetParent;
+		  while (p && p != document.body.parentNode) {
+		    if (isFinite(p.offsetLeft) && isFinite(p.offsetTop)) {
+		      left += p.offsetLeft;
+		      top += p.offsetTop;
+		    }
+		    
+		    p = p.offsetParent;
+		  }
+		  
+		  return { left: left, top: top,
+		           width: element.offsetWidth, height: element.offsetHeight };
+		}
+		
+		
+		/**
+		 * Helper function for element.addEventListener/attachEvent
+		 */
+		function addDomListener(element, eventName, listener) {
+			
+		  //alert ("addDomListener :" + listener);
+		  if (element.addEventListener)
+		    element.addEventListener(eventName, listener, false);
+		  else if (element.attachEvent)
+		    element.attachEvent('on' + eventName, listener);
+		   
+		   // alert ("addDomListener ok");
+		}
+
+        function testingfunc(evt)
+		{
+			alert ("testing: " + evt);
+		}
+		
+		
+		function OpenProCOMLink (evt) {
+			//alert("DD");
+			//alert('You clicked the 1111 HTML button!' + evt );
+			window.open("http://www.procommons.org.hk/kaitak","_blank");
+		    if (evt.preventDefault) {
+		      evt.preventDefault();
+		      evt.stopPropagation();
+		    }
+		    return false;
+		}
+		
+		function viewpoint0 (evt) {
+			//alert('You clicked the 1111 HTML button!' + evt );
+			viewpoint(0);
+		    if (evt.preventDefault) {
+		      evt.preventDefault();
+		      evt.stopPropagation();
+		    }
+		    return false;
+		}
+		
+		function viewpoint1 (evt) {
+			//alert('You clicked the 1111 HTML button!' + evt );
+			viewpoint(1);
+		    if (evt.preventDefault) {
+		      evt.preventDefault();
+		      evt.stopPropagation();
+		    }
+		    return false;
+		}
+		
+		function viewpoint2 (evt) {
+			//alert('You clicked the 1111 HTML button!' + evt );
+			viewpoint(2);
+		    if (evt.preventDefault) {
+		      evt.preventDefault();
+		      evt.stopPropagation();
+		    }
+		    return false;
+		}
+		
+		function viewpoint3 (evt) {
+			//alert('You clicked the 1111 HTML button!' + evt );
+			viewpoint(3);
+		    if (evt.preventDefault) {
+		      evt.preventDefault();
+		      evt.stopPropagation();
+		    }
+		    return false;
+		}
+		function viewpoint4 (evt) {
+			//alert('You clicked the 1111 HTML button!' + evt );
+			viewpoint(4);
+		    if (evt.preventDefault) {
+		      evt.preventDefault();
+		      evt.stopPropagation();
+		    }
+		    return false;
+		}
+		
+        function createButton(name1, x, y, width, height, imagestr, function1) {
+  				// create the button
+  			var button1 = document.createElement('a');
+		      
+  			// alert("1");
+  			  button1.href = '#';
+			  button1.className = 'tri-button';
+			  button1.style.display = 'block';
+			  button1.name = name1;
+			  button1.id = name1;
+			  //alert (button1.name);
+			  button1.style.backgroundImage = 'url("./images/'+ imagestr + '")';
+			  button1.style.backgroundColor = 'white';
+			  
+			  // create an IFRAME shim for the button
+			  var iframeShim = document.createElement('iframe');
+			  iframeShim.frameBorder = 0;
+			  iframeShim.scrolling = 'no';
+			  iframeShim.allowTransparency='true';
+			  iframeShim.src = (navigator.userAgent.indexOf('MSIE 6') >= 0) ?
+			      '' : 'javascript:void(0);';
+			
+			  //alert("2");
+			  // position the button and IFRAME shim
+			  var pluginRect = getElementRect(document.getElementById("map_canvas3d"));
+			  //alert("2.1");
+			  button1.style.position = iframeShim.style.position = 'absolute';
+			  button1.style.opacity = iframeShim.style.opacity = 1; //not useful as a transparent button!
+			  //alert("2.2");
+			  button1.style.left = iframeShim.style.left = (pluginRect.left + x) + 'px';
+			  //alert("2.5");
+			  button1.style.top = iframeShim.style.top = (pluginRect.top + y) + 'px';
+			  button1.style.width = iframeShim.style.width = width + 'px';
+			  button1.style.height = iframeShim.style.height = height + 'px';
+			  
+			  //alert("3");
+			  // set up z-orders
+			  button1.style.zIndex = 20;
+			  iframeShim.style.zIndex = button1.style.zIndex - 1;
+			  
+			  // set up click handler
+			/*  alert("addDomListener " + function1);
+			  addDomListener(button1, 'click',  function(evt) {
+    					alert('You clicked the okok122 HTML button!');
+    
+					    if (evt.preventDefault) {
+					      evt.preventDefault();
+					      evt.stopPropagation();
+					    }
+					    return false;
+  			  });
+  			  switch(name1)
+  			  {
+	  			  	case "btnPt0":
+	  					addDomListener(button1, 'click',  viewpoint0 );	  
+	  				break;
+	  			  
+  			  }*/
+  			  
+  			  //alert (name1);
+  			  addDomListener(button1, 'click',  function1 );	  
+  			  
+  			  
+  			  
+    		
+  			  
+  			  
+			  //alert("addDomListener ok");
+			  // add the iframe shim and button
+			  document.body.appendChild(button1);
+			  document.body.appendChild(iframeShim);
+			  
+			  //alert("5");
+		}
+
+	
+
+
+        function DrawR() {
+            //alert("DrawR");
+            gDrawing = !gDrawing;  //gCXT.fillRect(25, 25, 100, 100);
+            if (gDrawing) {
+                //alert("draw");
+                gCXT.fillStyle = "#FF0000";
+                gCXT.strokeStyle = "#0000FF";
+                gCXT.lineWidth = 4;
+                gCXT.moveTo(10, 10);
+                gCXT.lineTo(150, 50);
+                gCXT.stroke();
+               // gCXT.beginPath();
+
+            }
+
+        }
+
+        function init() {
+
+            g3DView = true;
+            g3DSupport = true;
+
+            var mapOptions = {
+                zoom: P_ZOOM[0],
+                center: new google.maps.LatLng(P_LAT[0], P_LNG[0]),
+                	mapTypeId: google.maps.MapTypeId.ROADMAP
+//                scaleControl: true,
+//                mapTypeControl: true,
+//                overviewMapControl: true,
+//                overviewMapControlOptions: {
+//                  // position: google.maps.ControlPosition.RIGHT_TOP,
+//                   opened: true
+//                }
+            };
+
+            if (!google.earth.isSupported()) 
+            {
+                alert("3D View Not Support!");
+                g3DSupport = false;
+                g3DView = true;
+
+                gMap2D = new google.maps.Map(document.getElementById('map_canvas2d'), mapOptions);
+
+
+                var KT_Bound = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(KT_SOUTH, KT_WEST),
+                    new google.maps.LatLng(KT_NORTH, KT_EAST));
+
+                gKT = new google.maps.GroundOverlay(NPLAN_URL, KT_Bound);
+                gKT.setMap(gMap2D);
+                $("#btn3D").attr("disabled", "disabled");
+                viewpoint(0);
+               // alert ("!");
+            }
+            else {
+
+	           // alert("3D View Support!");
+                gMap2D = new google.maps.Map(document.getElementById('map_canvas2d'), mapOptions);
+
+                var KT_Bound = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(KT_SOUTH, KT_WEST),
+                    new google.maps.LatLng(KT_NORTH, KT_EAST));
+
+                gKT = new google.maps.GroundOverlay(NPLAN_URL, KT_Bound);
+                gKT.setMap(gMap2D);
+
+
+                google.earth.setLanguage('en');
+                google.earth.createInstance("map_canvas3d", initCallback, failureCallback);
+
+
+            }
+            
+            gGeoCoder = new google.maps.Geocoder();
+  
+			
+            $('html').bind('keypress', function (e) {
+                if (e.keyCode == 13) {
+                    searchlocation();
+                    //return e.keyCode = 9; //set event key to tab
+                }
+            });
+
+        }
+        
+        function locateto(pt1) {
+            //var pt1;
+           // alert("locateto");
+            //pt1 = gPlacemark.getGeometry();
+            
+            gLookat = gMap3D.getView().copyAsLookAt(gMap3D.ALTITUDE_RELATIVE_TO_GROUND);
+            gLookat.setLatitude(pt1.getLatitude());
+
+            gLookat.setLongitude(pt1.getLongitude());
+
+            gLookat.setAltitude(MAIN_HEIGHT);
+            // alert("1");
+            gLookat.setTilt(40);
+
+            gLookat.setHeading(0);
+            //MAIN_HEADING
+            //alert("2");
+            gLookat.setRange(MAIN_RANGE);
+
+            gMap3D.getView().setAbstractView(gLookat);
+            
+        }
+        
+		function viewpoint(pt_idx) {
+            //alert("viewpoint " + P_LNG[pt_idx]);
+            var src1;
+            var loc1;
+            if (g3DSupport) {
+                gLookat = gMap3D.getView().copyAsLookAt(gMap3D.ALTITUDE_RELATIVE_TO_GROUND);
+                gLookat.setLatitude(P_LAT[pt_idx]);
+
+                gLookat.setLongitude(P_LNG[pt_idx]);
+
+                gLookat.setAltitude(MAIN_HEIGHT);
+                gLookat.setTilt(P_TILT[pt_idx]);
+
+                gLookat.setHeading(P_HEADING[pt_idx]);
+
+                gLookat.setRange(P_RANGE[pt_idx]);
+
+                gMap3D.getView().setAbstractView(gLookat);
+
+                gLoc = new google.maps.LatLng(P_LAT[pt_idx], P_LNG[pt_idx]);
+                //alert("goto to " + Plan_Info.Name);
+                gMap2D.panTo(gLoc);
+                gMap2D.setZoom(P_ZOOM[pt_idx]);
+            }
+            else {
+
+                gLoc = new google.maps.LatLng(P_LAT[pt_idx], P_LNG[pt_idx]);
+                //alert("goto to " + Plan_Info.Name);
+                gMap2D.panTo(gLoc);
+                gMap2D.setZoom(P_ZOOM[pt_idx]);
+            }
+
+           // src1 = "p" + pt_idx + ".png";
+           // alert (src1);
+            changeimage(src1);
+            //alert (src1 + " ok");
+
+        }
+         
+        
+        function initCallback(object) {
+           // alert("initCallback 3D");
+            gMap3D = object;
+            gMap3D.getWindow().setVisibility(true);
+            //gMap3D.getSun().setVisibility(true);
+            gMap3D.getOptions().setAtmosphereVisibility(true);
+            gMap3D.getOptions().setStatusBarVisibility(true);
+            gMap3D.getOptions().setScaleLegendVisibility(true);
+            
+            //gMap3D.getLayerRoot().enableLayerById(gMap3D.LAYER_ROADS, true);
+         //   gMap3D.getLayerRoot().enableLayerById(gMap3D.LAYER_BUILDINGS_LOW_RESOLUTION, true);
+            gMap3D.getLayerRoot().enableLayerById(gMap3D.LAYER_BUILDINGS, true);
+      //      gMap3D.getLayerRoot().enableLayerById(gMap3D.LAYER_BUILDINGS, true);
+
+
+            // Create the GroundOverlay
+            gNewPlan = gMap3D.createGroundOverlay('');
+
+            // Specify the image path and assign it to the GroundOverlay
+            var icon = gMap3D.createIcon('');
+            icon.setHref(NPLAN_URL);
+           // alert("22");
+            gNewPlan.setIcon(icon);
+           // alert("A0 2");
+            // Specify the geographic location
+            var latLonBox = gMap3D.createLatLonBox('');
+            latLonBox.setBox(KT_NORTH, KT_SOUTH, KT_EAST,  KT_WEST, 0);
+            gNewPlan.setLatLonBox(latLonBox);
+
+            // Add the GroundOverlay to Earth
+            gMap3D.getFeatures().appendChild(gNewPlan);
+           // alert ("VP");
+             viewpoint(0);
+       
+           
+            //alert ("F1");
+            //eval("testingfunc('ok123');");
+			createButton("btn2D3D", 100,50,120,40,"btnView.png", switchView);
+			
+			createButton("btnPt0" ,80,120,120,40,"btnPt0.png", viewpoint0);
+			createButton("btnPt1" ,80,200,120,40,"btnPt1.png", viewpoint1);
+			createButton("btnPt2", 80,250,120,40,"btnPt2.png", viewpoint2);
+			createButton("btnPt3", 80,300,120,40,"btnPt3.png", viewpoint3);
+			createButton("btnPt4", 80,350,120,40,"btnPt4.png", viewpoint4);
+			
+			createButton("btnLink", 80,450,120,40,"btnLink.png", OpenProCOMLink);
+			
+			//alert ("F2");
+			
+        }
+
+        function failureCallback(object) {
+            alert("failure " + object.toString());
+        }
+        function ZoomtoRange(zoomlevel1) {
+            //gLookat = gMap3D.getView().copyAsLookAt(gMap3D.ALTITUDE_RELATIVE_TO_GROUND);
+            //range1 = gLookat.getRange();
+
+            // by    simple regression
+            // range
+            // level  12  = 24000 m
+            // level  13 = 12000 m
+            // level  14 = 6000 m
+            //level 15  =  3000
+            //level 16 = 1500
+            //level 17 = 750
+            //level 18 = 325
+            //level 19 = ....
+
+            var dzoom;
+     
+            dzoom = ZOOM13 - zoomlevel1;
+            range1 = RANGE13 * Math.pow(2, dzoom);
+
+            //alert(zoomlevel1 + " > " + range1);
+            return range1;
+
+        }
+
+        function logBase2(value1) {
+
+            return (Math.log(value1)/Math.LN2)
+        }
+
+        function logBase10(value1) {
+            return (Math.log(value1) / Math.LN10)
+        }
+        
+        
+        function RangetoZoom(range1) {
+
+    
+
+            var r_diff = range1 / RANGE13;
+
+            var d_scale = logBase2(r_diff);
+            //alert(range1 + " > " + (ZOOM13 - Math.round(d_scale)));
+            return (ZOOM13 - Math.round(d_scale));
+
+            //return gMap2D.getZoom();
+
+        }
+        function switchView() {
+            
+            var zoom1;
+            var range1;
+            g3DView = !g3DView;
+            //zoom1 = gMap2D.getZoom();
+            //gLookat = gMap3D.getView().copyAsLookAt(gMap3D.ALTITUDE_RELATIVE_TO_GROUND);
+            //range1 = gLookat.getRange();
+
+            //alert(zoom1 + "  -  " + range1);
+            //alert ("switchView");
+
+            if (g3DView) {
+                //From 2D to 3D
+                //Get 2D Map now!
+                gLoc = gMap2D.getCenter();
+                zoom1 = gMap2D.getZoom();
+              //  alert(zoom1);
+                range1 = ZoomtoRange(zoom1);
+               // alert(gLoc.lng());
+
+
+               //goto 3D
+                gLookat = gMap3D.getView().copyAsLookAt(gMap3D.ALTITUDE_RELATIVE_TO_GROUND);
+                gLookat.setLatitude(gLoc.lat());
+
+                gLookat.setLongitude(gLoc.lng());
+
+                gLookat.setAltitude(MAIN_HEIGHT);
+                gLookat.setTilt(DEFAULT_TILT);
+
+                gLookat.setHeading(0);
+
+                gLookat.setRange(range1);
+
+                gMap3D.getView().setAbstractView(gLookat);
+
+                tempstr = "<b> Location: [" + gLoc.lng().toFixed(DEC_PLACE) + "," + gLoc.lat().toFixed(DEC_PLACE) + "]</b>";
+                $("#lblInfo").html(tempstr);
+
+
+                $("#map_canvas3d").show();
+                $("#map_canvas2d").hide();
+            }
+            else {
+                //From 3D to 2D
+                
+                //Get 3D Map Now
+                gLookat = gMap3D.getView().copyAsLookAt(gMap3D.ALTITUDE_RELATIVE_TO_GROUND);
+                range1 = gLookat.getRange();
+                zoom1 = RangetoZoom(range1);
+
+                gLoc = new google.maps.LatLng(gLookat.getLatitude(), gLookat.getLongitude());
+                //alert("goto to " );
+                gMap2D.panTo(gLoc);
+                gMap2D.setZoom(zoom1);
+
+                tempstr = "<b> Location: [" + gLoc.lng().toFixed(DEC_PLACE) + "," + gLoc.lat().toFixed(DEC_PLACE) + "]</b>";
+                $("#lblInfo").html(tempstr);
+
+
+                $("#map_canvas2d").show();
+                $("#map_canvas3d").hide();
+            }
+        }
+
+        function searchlocation() {
+            //alert("searchlocation");
+            var address1;
+            var pt1;
+            address1 = $("#txtlocation").val().replace(/^\s+|\s+$/g, '');
+            if (address1.length == 0) {
+                alert("Please input location");
+                return (1);
+            }
+            gGeoCoder.geocode({ 'address': address1 }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    gAddress = results[0].formatted_address;
+                    //alert (results[0].address_components[0].short_name());
+                    //gMap.setCenter(results[0].geometry.location);
+                    $("#lbladdress").html(gAddress);
+                    gSearchLoc = results[0].geometry.location;
+                    gPlacemark = gMap3D.createPlacemark('');
+
+                    gPlacemark.setName(gAddress);
+
+                    pt1 = gMap3D.createPoint('');
+                    pt1.setLatitude(gSearchLoc.lat());
+                    pt1.setLongitude(gSearchLoc.lng());
+                    
+                    gPlacemark.setGeometry(pt1);
+                    gMap3D.getFeatures().appendChild(gPlacemark);
+                    locateto(pt1);
+
+                } else {
+                    alert(" Cannot found " + address1);
+                    alert("Geocode was not successful for the following reason: " + status);
+                }
+            });
+        }
+
+        function getOffset(el) {
+            var _x = 0;
+            var _y = 0;
+            while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+                _x += el.offsetLeft - el.scrollLeft;
+                _y += el.offsetTop - el.scrollTop;
+                el = el.parentNode;
+            }
+            return { top: _y, left: _x };
+        }
+
+        
+        
+        function changeimage(imagestr) {
+            //alert(" it is " + imagestr);
+
+//            var can1;
+//            var cxt;
+            var img1;
+            //alert("1");
+            gCan = document.getElementById("canInfo");
+            //alert("2");
+            gCXT = gCan.getContext("2d");
+            //alert("3");
+            
+            img1 = new Image();
+            //alert("4");
+            img1.src = "./images/" + imagestr;
+            //ert("5");
+            
+            img1.onload = function (event) {
+               // alert("6");
+                gCXT.drawImage(img1, 0, 0, 300, 300);
+             //  alert("7");
+            }
+            //alert(" End " + imagestr);
+        }
+
+
+
+//        function mouseMoveEvent(e) {
+
+//            var tempstr;
+//            var Location;
+
+//            //var lblmapinfo;
+//            //window.alert("11");
+//            //tempstr = "[" + Math.round(gMap.getCenter().lat()*100000)/100000 +  "," + Math.round(gMap.getCenter().lng()*100000)/100000  + "]";
+//            gLoc = e.latLng;
+//            tempstr = "<b> Location: [" + gLoc.lng().toFixed(DEC_PLACE) + "," + gLoc.lat().toFixed(DEC_PLACE) + "]</b>";
+
+//            $("#lblInfo").html(tempstr);
+
+//        }
+
+
+//        function can_mousemove() {
+//            //alert("##");
+//            var x;
+//            var y;
+
+//            var s = 'X=' + window.event.clientX + ' Y=' + window.event.clientY;
+//            //document.getElementById('divCoord').innerText = s;
+
+//            x = getOffset(document.getElementById('canInfo')).left;
+//            y = getOffset(document.getElementById('canInfo')).top;
+
+//            $("#lblxy").html(s);
+
+
+
+//        }
+
+    </script>
+
+  </head>
+
+
+  <body style="background-color :#EEFFEE"  onload='init()' id='body'>
+    
+<!--        <div>
+            <center><h2>「人文啟德」 民間規劃方案  2013 </h2> </center> 
+        </div>-->
+   	   <!-- <div id="map_canvas3d" style="z-index:12; border: 1px solid silver; position: absolute; 
+   	   left: 10px; top: 10px; height: 95%; width: 100%;"></div> -->
+ 	   <div id="map_canvas3d" style="z-index:12; border: 1px solid silver; position: absolute; 
+   	   left: 5px; top: 5px; height: 100%; width: 100%;">
+   	   </div>   	   
+       
+   	   <div id="map_canvas2d" style="z-index:13; border: 1px solid silver; position: absolute; 
+   	   left: 5px; top: 5px; height: 100%; width: 100%;">
+   	   </div>
+      
+       <div id="map_control" style="position: absolute;z-index:99; background-color:#EE9999; opacity:0.8; 
+        left: 500px; top: 100px; width:200px; height: 300px; display:none; ">
+          <!-- no longer use this control <input id="txtlocation" type="text" /> <br />
+
+          <input id="cmdsearch" type="button" value="Search" onclick="searchlocation()" />
+           <div id="lbladdress" onclick="locateto()" >---</div><br />
+              <input id="cmdlocate" onclick="locateto()" type="button" value="Locate" />-->
+              <input id="btn3D" type="button" value="2D/3D" onclick="switchView()"/>
+
+              <input id="btnMainview0" type="button" value="主要規劃區" 
+                   onclick="return viewpoint(0)" /><br />
+              <br />
+              <input id="btnMainview1" type="button" value="主要變動一" 
+                  onclick="return viewpoint(1)" /><br />
+              <br />
+              <input id="btnMainview2" type="button" value="主要變動二" 
+                  onclick="return viewpoint(2)" /><br />
+              <br />
+              <input id="btnMainview3" type="button" value="主要變動三" 
+                  onclick="return viewpoint(3)" /><br />
+              <br />
+              <input id="btnMainview4" type="button" value="主要變動四" 
+                  onclick="return viewpoint(4)" /><br />
+  <!--            <input id="Button1" type="button" value="DrawR" 
+                  onclick="DrawR()" /><br />
+              <div id="lblxy"> xy </div>-->
+              <div id="lblInfo">---</div>
+
+         </div>
+         
+        <div id="picBox" style=" z-index:18 ; background-color:#99EE99; opacity:0.8; 
+        	position: absolute; left: 500px; top: 320px; width:200px; height: 200px;display:none ">
+        <canvas id="canInfo" width="300" height ="300"  >  </canvas>    
+        </div>
+
+          
+        <!--<div id="picBox" style=" z-index:11 ; background-color:#99EE99; opacity:1; position: absolute; left: 1000px; top: 400px; width:300px; height: 300px; ">
+  
+            <img id="imgInfo" src="p2.png" height="300px" width="300px" alt="info" onmousemove="img_mousemove()"/>
+        </div> -->
+
+  </body>
+</html>

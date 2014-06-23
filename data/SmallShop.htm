@@ -1,0 +1,489 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Hong Kong Small Shop</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+    
+    
+<!--#ShopListShow
+{
+  background-color:Gray;
+  visibility:hidden;
+  display:none;
+  z-index:9001;
+  position:absolute;
+  top:50px;
+  left:80px;
+  width:200px;
+    
+}
+
+#ShopListHide
+{
+  background-color:Gray;
+  visibility:visible;
+  z-index:9001;
+  position:absolute;
+  top:50px;
+  left:80px;
+  width:200px;
+    
+}-->
+
+
+#mask {
+   background-color:#111;
+   opacity: 0.8;
+   position:absolute;
+   z-index: 9001; /*ooveeerrrr nine thoussaaaannnd*/
+   top:0px;
+   left:0px;
+   width:100%;
+}
+#popUpDiv {
+	position:absolute;
+	background-color:#eeeeee;
+	width:400px;
+	height:600px;
+	z-index: 9002; /*ooveeerrrr nine thoussaaaannnd*/
+}
+
+</style>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript">
+    var gMap;
+   // var gLat;
+   // var gLong;
+    var gLoc;
+
+    var gShopJSONLst; //JSON Array String
+
+    var gSelShop; //Current Shop
+    
+    var gFindShopLst; //Shop Array;
+    var gFindShopLst_Num;
+
+    var gShowShop; //boolean
+ 
+    var KMLURL = "http://maps.google.com/maps/ms?authuser=0&vps=3&ie=UTF8&msa=0&output=kml&msid=205559861957823861228.0004b5b08d47157e1cfca";
+    //var KMLURL = "http://maps.google.com.tw/maps/ms?authuser=0&vps=2&brcurrent=h3,0x0:0x0&ie=UTF8&msa=0&output=kml&msid=205559861957823861228.0004b6dd78539c0079636";
+    //var KMLURL = "http://maps.google.com/maps/ms?authuser=0&vps=2&ie=UTF8&msa=0&output=kml&msid=205559861957823861228.0004b5b08d47157e1cfca";
+
+//    var KMLURL = "http://www.mappa.com.hk/rtms123/20111214/data/RTMS_ob_RTLE.txt";
+
+    function toggle(div_id) {
+        var el = document.getElementById(div_id);
+        if (el.style.display == 'none') { el.style.display = 'block'; }
+        else { el.style.display = 'none'; }
+    }
+
+
+    function blanket_size(popUpDivVar) {
+        if (typeof window.innerWidth != 'undefined') {
+            viewportheight = window.innerHeight;
+        } else {
+            viewportheight = document.documentElement.clientHeight;
+        }
+        if ((viewportheight > document.body.parentNode.scrollHeight) && (viewportheight > document.body.parentNode.clientHeight)) {
+            blanket_height = viewportheight;
+        } else {
+            if (document.body.parentNode.clientHeight > document.body.parentNode.scrollHeight) {
+                blanket_height = document.body.parentNode.clientHeight;
+            } else {
+                blanket_height = document.body.parentNode.scrollHeight;
+            }
+        }
+        var blanket = document.getElementById('mask');
+        blanket.style.height = blanket_height + 'px';
+       // alert(popUpDivVar);
+        var popUpDiv1 = document.getElementById(popUpDivVar);
+        var half_popup_height = $(popUpDiv1).height() / 2;
+       // alert("half" + half_popup_height);
+        popUpDiv_height = (blanket_height / 2) - half_popup_height; //150 is half popup's height
+        popUpDiv.style.top = popUpDiv_height + 'px';
+    }
+
+
+    function window_pos(popUpDivVar) {
+        if (typeof window.innerWidth != 'undefined') {
+            viewportwidth = window.innerHeight;
+        } else {
+            viewportwidth = document.documentElement.clientHeight;
+        }
+        if ((viewportwidth > document.body.parentNode.scrollWidth) && (viewportwidth > document.body.parentNode.clientWidth)) {
+            window_width = viewportwidth;
+        } else {
+            if (document.body.parentNode.clientWidth > document.body.parentNode.scrollWidth) {
+                window_width = document.body.parentNode.clientWidth;
+            } else {
+                window_width = document.body.parentNode.scrollWidth;
+            }
+        }
+        var popUpDiv = document.getElementById(popUpDivVar);
+      
+        window_width = window_width / 2 - 150; //150 is half popup's width
+        popUpDiv.style.left = window_width + 'px';
+    }
+
+
+    function popup(windowname) {
+        alert(windowname);
+        blanket_size(windowname);
+        window_pos(windowname);
+        toggle('mask');
+        toggle(windowname);
+    }
+
+
+
+    function Shop() {
+        this.ShopName = "Testing";
+        this.Lat = "22.3";
+        this.Lng = "114.44";
+        Shop.prototype.showMe = function () {
+            alert("Here is " + this.ShopName + "!");
+        }
+
+        Shop.prototype.setObject = function (tempObj) {
+            //            gSelShop.ShopName = gShopLst[i].ShopName;
+            //            gSelShop.Lat = gShopLst[i].Lat;
+            //            gSelShop.Lng = gShopLst[i].Lng;
+          //  alert("setObject is " + tempObj.ShopName + "!");
+            this.ShopName = tempObj.ShopName;
+            this.Lat = tempObj.Lat;
+            this.Lng = tempObj.Lng;
+
+        }
+        Shop.prototype.setJSON = function (tempJSON) {
+//            gSelShop.ShopName = gShopLst[i].ShopName;
+//            gSelShop.Lat = gShopLst[i].Lat;
+//            gSelShop.Lng = gShopLst[i].Lng;
+           // alert("setJSON is " + tempJSON.ShopName + "!");
+            this.ShopName = tempJSON.ShopName;
+            this.Lat = tempJSON.Lat;
+            this.Lng = tempJSON.Lng;
+
+            
+        }
+    }
+
+
+    function sleep(milliSeconds) {
+        var startTime = new Date().getTime(); // get the current time
+        while (new Date().getTime() < startTime + milliSeconds); // hog cpu
+
+    }
+
+//    $(function () {
+//        $("#contact").live('click', function (event) {
+//            $(this).addClass("selected").parent().append('<div class="messagepop pop"><form method="post" id="new_message" action="/messages"><p><label for="email">Your email or name</label><input type="text" size="30" name="email" id="email" /></p><p><label for="body">Message</label><textarea rows="6" name="body" id="body" cols="35"></textarea></p><p><input type="submit" value="Send Message" name="commit" id="message_submit"/> or <a class="close" href="/">Cancel</a></p></form></div>');
+//            $(".pop").slideFadeToggle(function () {
+//                $("#email").focus();
+//            });
+//            return false;
+//        });
+
+//        $(".close").live('click', function () {
+//            $(".pop").slideFadeToggle(function () {
+//                $("#contact").removeClass("selected");
+//            });
+//            return false;
+//        });
+//    });
+
+//    $.fn.slideFadeToggle = function (easing, callback) {
+//        return this.animate({ opacity: 'toggle', height: 'toggle' }, "fast", easing, callback);
+//    };    
+
+    function initShopList() {
+        gShopJSONLst = [
+{ ShopName: "百利士多鋪", Lng: 114.0311948, Lat: 22.44593408 },
+{ ShopName: "暉塋果子", Lng: 114.0303262, Lat: 22.44456084 },
+{ ShopName: "金桃麵包", Lng: 114.0302501, Lat: 22.4446465 },
+{ ShopName: "養和堂涼茶館", Lng: 114.0295504, Lat: 22.44437698 },
+{ ShopName: "申記上海包", Lng: 114.030272, Lat: 22.44544712 },
+{ ShopName: "金桃麵包", Lng: 114.0300239, Lat: 22.4459129 },
+{ ShopName: "新昇鮮果香煙", Lng: 114.0298791, Lat: 22.44590871 },
+{ ShopName: "元朗戲院", Lng: 114.0290392, Lat: 22.44572202 },
+{ ShopName: "美奇玩具屋", Lng: 114.029052, Lat: 22.44549357 },
+{ ShopName: "榮興玩具", Lng: 114.0285428, Lat: 22.44564476 },
+{ ShopName: "富麗餅屋", Lng: 114.0289287, Lat: 22.44491296 },
+{ ShopName: "Fresh Fresh Cookies", Lng: 114.0292089, Lat: 22.44403469 },
+{ ShopName: "新鮮麵包餅店", Lng: 114.0289125, Lat: 22.44363786 },
+{ ShopName: "麥記糕品", Lng: 114.0289678, Lat: 22.44375019 },
+{ ShopName: "好到底麵家", Lng: 114.0292261, Lat: 22.44374245 },
+{ ShopName: "好又多食品", Lng: 114.0290743, Lat: 22.44376721 },
+{ ShopName: "呂廷辦館", Lng: 114.0290629, Lat: 22.44271724 },
+{ ShopName: "養和堂涼茶館", Lng: 114.0274782, Lat: 22.44307416 },
+{ ShopName: "德善堂涼茶", Lng: 114.0271978, Lat: 22.44342623 },
+{ ShopName: "大橋街市", Lng: 114.0268089, Lat: 22.44536471 },
+{ ShopName: "散貨場", Lng: 114.0267363, Lat: 22.44626414 },
+{ ShopName: "德善堂", Lng: 114.0250482, Lat: 22.44468605 },
+{ ShopName: "金雋鍋貼大王", Lng: 114.0246199, Lat: 22.444391 },
+{ ShopName: "小食街", Lng: 114.0235297, Lat: 22.44483469 },
+{ ShopName: "涼茶鋪", Lng: 114.023487, Lat: 22.44625681 },
+{ ShopName: "周太豆腐花", Lng: 114.0236164, Lat: 22.44625512 },
+{ ShopName: "白海豚麵包店", Lng: 114.0216034, Lat: 22.44613615 },
+{ ShopName: "佳記士多", Lng: 114.0213908, Lat: 22.44645162 },
+{ ShopName: "豫豐號", Lng: 114.0211023, Lat: 22.44685062 },
+{ ShopName: "振興士多", Lng: 114.0185621, Lat: 22.44594236 },
+{ ShopName: "迪斯麵包餅店", Lng: 114.0069857, Lat: 22.45320563 },
+{ ShopName: "車厘子餅店", Lng: 114.0033258, Lat: 22.45109262 },
+{ ShopName: "迪斯麵包餅店", Lng: 114.0027051, Lat: 22.44918672 },
+{ ShopName: "一番零食館", Lng: 114.0032167, Lat: 22.44828253 },
+{ ShopName: "B&C Bakery", Lng: 114.0014321, Lat: 22.45175654 },
+{ ShopName: "千式麵包屋", Lng: 114.0003294, Lat: 22.45204208 }
+                   ];
+
+
+    }
+
+function MapLoadCompletedEvent()
+{
+	if (gShowShop) {
+
+	 //   gSelShop.showMe();
+	    
+		gShowShop = false;
+	}
+}
+
+function mouseMoveEvent(e) 
+{
+
+        var tempstr;
+        var Location;
+        var DISPLAY_FIG = 1000000;         
+        //var lblmapinfo;
+        //window.alert("11");
+        //tempstr = "[" + Math.round(gMap.getCenter().lat()*100000)/100000 +  "," + Math.round(gMap.getCenter().lng()*100000)/100000  + "]";
+
+        tempstr = "<b> Position: </b> [" + Math.round(e.latLng.lng() * DISPLAY_FIG) / DISPLAY_FIG + "," + Math.round(e.latLng.lat() * DISPLAY_FIG) / DISPLAY_FIG + "]";
+
+        //window.alert("mouseMoveEvent" + tempstr);
+        //gMapInfo = document.getElementById("lblMapInfo");
+        //gMapInfo.innerHTML = tempstr;
+       // $("#txtDest").attr("value", gTextTo);
+        //alert("1");
+        $("#lblMapInfo").html(tempstr);
+        //alert("2");
+    }
+
+     
+
+    function FindShopLoc(shop1) {
+
+        var tempstr;
+        //var found = 0;
+   
+
+        if (shop1.toString().length == 0) {
+            alert("Please input the shop name!");
+            return;
+        }
+
+        gFindShopLst_Num = 0;
+        gFindShopLst = new Array();
+        $("#tblShopList>tbody").empty();
+
+
+        tempstr = shop1.toString().toUpperCase();
+
+        for (var i = 0; i < gShopJSONLst.length; i++) {
+
+            if (gShopJSONLst[i].ShopName.toString().toUpperCase().match(tempstr) != null) {
+                //alert(gShopJSONLst[i].ShopName);
+                gFindShopLst[gFindShopLst_Num] = new Shop();
+                gFindShopLst[gFindShopLst_Num].setJSON(gShopJSONLst[i]);
+
+
+
+
+                $("#tblShopList>tbody:last").append("<tr><td><a href='javascript:GotoShopIdx(" + gFindShopLst_Num + ")'>" + gFindShopLst[gFindShopLst_Num].ShopName + "</a></td></tr>");
+                gFindShopLst_Num++;
+                //found = 1;
+                //alert("2" + gShopLst[i].ShopName);
+              //  GotoShop();
+                //break; 
+
+            }
+        }
+        if (gFindShopLst_Num == 0) {
+            gSelShop = null;
+            alert("Cannot find Shop with name [" + shop1 + "]");
+        }
+        else if (gFindShopLst_Num == 1) {
+           // alert("1 shop");
+            gSelShop = new Shop();
+            gSelShop = gFindShopLst[0];
+//            gSelShop.ShopName = gFindShopLst[0].ShopName;
+//            gSelShop.ShopName = gFindShopLst[0].ShopName;
+            GotoShop();
+        }
+//        else {
+//            alert("more than 1 shop " + gFindShopLst_Num);
+//            toggle('popupdiv');
+//        }
+    
+    }
+
+    function GotoShopIdx(idx) {
+      //  alert(idx);
+        //alert(gFindShopLst[idx].ShopName);
+        gSelShop = new Shop();
+        gSelShop = gFindShopLst[idx];
+        
+        GotoShop()
+    }
+
+    function GotoShop()
+    {
+        gLoc = new google.maps.LatLng(gSelShop.Lat, gSelShop.Lng);
+        //alert(gLoc.Lat);
+        gMap.panTo(gLoc);
+        gMap.setZoom(20);
+	    gShowShop = true;
+
+        //  sleep(5000)
+      //asynchronise....
+       
+
+    }
+
+    function initialize() 
+    {
+        var latlng = new google.maps.LatLng(22.44, 114.02);
+        var myOptions = {
+            zoom: 15,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+       // alert('ok1');
+        gMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+        google.maps.event.addListener(gMap, "mousemove", mouseMoveEvent);
+
+	    google.maps.event.addListener(gMap, "idle", MapLoadCompletedEvent);
+       // alert('ok2');
+        //http://econym.org.uk/gmap/lancashire.kml
+
+        loadKml(KMLURL);
+
+        initShopList();
+//        //var gx = new GGeoXml("http://vm-xp1105d/TestingWeb/earthapikml.kml");
+//        var gx = new GGeoXml("http://code.google.com/articles/support/earthapikml.kml");
+//        alert('ok3');
+//        gMap.addOverlay(gx);
+        //var ShopLayer = new google.maps.KmlLayer('C:\rSMRIS\webapp\TestingWeb\TestingWeb\Shop_YLTSW.kml');
+        //ShopLayer.setMap(gMap);
+  //      alert('ok4');
+  }
+
+    function loadKml(url) {
+       // alert('oka');
+    //    gMap.clearOverlays();
+       // alert('oka1' + url);
+        //var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+        var georssLayer = new google.maps.KmlLayer(url);
+       // alert('oka2');
+        georssLayer.setMap(gMap);
+
+//        var geoXml = new GGeoXml(url);
+ 
+  //      gMap.addOverlay(geoXml);
+   //     alert('oka3');
+    //    geoXml.gotoDefaultViewport(gMap);
+    //    alert('oka4');
+       // document.getElementById('kmlurl').value = url;
+    }
+
+//    var gi = 0;
+
+//    function testing() {
+
+//        alert("dsds");
+//    }
+
+
+    function BtnFind_onclick() {
+        
+        var shop1 = document.getElementById("txtShopName").value;
+        //alert(shop1);
+       
+
+        FindShopLoc(shop1);
+
+    }
+
+</script>
+    <style type="text/css">
+        #BtnFind
+        {
+            font-weight: 700;
+        }
+        #lblMapInfo
+        {
+            height: 27px;
+            width: 374px;
+        }
+        #ShopFinder
+        {
+            height: 14px;
+            width: 380px;
+        }
+        .style1
+        {
+            width: 233px;
+        }
+    </style>
+</head>
+<body onload="initialize()">
+<!--<a href="/contact" id="contact">Contact Us</a>-->
+<!--<div id="mask" style="display:none;"></div>
+<div id="popUpDiv" style="display:none;">
+<a href="#" onclick="popup('popUpDiv')">Shope List  ---   Close</a>
+</div>-->
+
+
+
+<!--<div id="divAdd"> okok <br /></div>-->
+
+<!--<select id="carlist"> 
+ <option>Volvo</option>
+  <option selected="selected">Saab</option>
+  <option>Mercedes</option>
+  <option>Audi</option>
+</select>-->
+
+<!--<input id="BtnAdd" type="button" value="Add" onclick="return BtnAdd_onclick()" />
+
+<a href="#" onclick="popup('popUpDiv')">Open</a>
+-->
+  <div id="map_canvas" style="width:800px; height:600px"></div>
+
+  <div id ="map_control">
+    <div id="lblMapInfo"><b> Position: </b>  [--- , ---]</div>
+      &nbsp;<div id="ShopFinder"><b> Shop Name: </b>&nbsp;<input id="txtShopName" type="text" />&nbsp;
+    <input id="BtnFind" type="button" value="Find" onclick="return BtnFind_onclick()" /></div>
+      <p>
+        <table id="tblShopList">
+        <tbody></tbody>
+        </table>
+    </p>
+     
+  </div>
+
+
+
+
+
+
+
+</body>
+</html>

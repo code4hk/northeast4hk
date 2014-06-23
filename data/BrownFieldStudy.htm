@@ -1,0 +1,500 @@
+﻿<html>
+  <head>
+    <title>Hong Kong Farm & Fish Ponds Map - (Dec 2012)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no,  text/html; charset=UTF-8 ">
+    <meta HTTP-EQUIV="CACHE-CONTROL" content="NO-CACHE">
+    <meta charset="utf-8">
+    
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" >
+
+        var KTN_IMAGE_LINK = "https://fbcdn-sphotos-f-a.akamaihd.net/hphotos-ak-snc6/189119_10151287647359595_862333025_n.jpg";
+        var FLN_IMAGE_LINK = "https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-ash3/64546_10151287647169595_1277853403_n.jpg";
+        var PC_IMAGE_LINK = "https://fbcdn-sphotos-h-a.akamaihd.net/hphotos-ak-snc7/374555_10151327048334595_1427803590_n.jpg";
+
+        var DATA_LINK = "https://maps.google.com.hk/maps/ms?authuser=0&vps=2&hl=zh-TW&brcurrent=h3,0x340400e82572c6b7:0x22fe68b2f10791c8&ie=UTF8&msa=0&output=kml&msid=205559861957823861228.0004cd043009f922f5b04";
+        var KML_HEAD = "";
+        var KML_TAIL = "";
+
+        var kml_content ="";
+        var gKMLLyr;
+
+        //1 deg ~ 100km = 100000m
+        // 1 meters =  0.00001 , 5 decimal place to 1 metre, 4 to 10 metres
+        var DEC_PLACE = 5;   // 10 metres
+
+        var gMap;
+        var gMoveLoc;
+        var gClickLoc;
+
+        var gKMLLyr;
+        var gKTN;
+        var gPC;
+        var gFLN;
+
+        var gRecording;
+        var gPt_Array;
+        var gPtNum;
+        var gControl;
+
+        var gKMLDatastr;
+        var gShowDatastr;
+
+        function addPlan() {
+
+            gKTN_Info = { Name: "古洞北", Lng: 114.103404, Lat: 22.511221 };
+            gFLN_Info = { Name: "粉嶺北", Lng: 114.133345, Lat: 22.509087 };
+            gPC_Info = { Name: "坪輋", Lng: 114.155252, Lat: 22.526696 };
+
+            var KTN_Bound = new google.maps.LatLngBounds(
+            new google.maps.LatLng(22.49837209859847, 114.0849810553559),
+            new google.maps.LatLng(22.52377417382172, 114.1237720642901));
+
+            gKTN = new google.maps.GroundOverlay(KTN_IMAGE_LINK, KTN_Bound);
+            gKTN.setMap(gMap);
+
+            var PC_Bound = new google.maps.LatLngBounds(
+            new google.maps.LatLng(22.5126376480897, 114.142246466345),
+           	new google.maps.LatLng(22.54157850127598, 114.1730990528305));
+
+            gPC = new google.maps.GroundOverlay(PC_IMAGE_LINK, PC_Bound);
+            gPC.setMap(gMap);
+
+
+            var FLN_Bound = new google.maps.LatLngBounds(
+            new google.maps.LatLng(22.49692378591179, 114.1120410817865),
+           	new google.maps.LatLng(22.52199972663431, 114.1545870900978));
+
+            gFLN = new google.maps.GroundOverlay(FLN_IMAGE_LINK, FLN_Bound);
+
+            gFLN.setMap(gMap);
+
+            google.maps.event.addListener(gKTN, "mousemove", mouseMoveEvent);
+            google.maps.event.addListener(gFLN, "mousemove", mouseMoveEvent);
+            google.maps.event.addListener(gPC, "mousemove", mouseMoveEvent);
+
+            google.maps.event.addListener(gKTN, "click", mouseClickEvent);
+            google.maps.event.addListener(gFLN, "click", mouseClickEvent);
+            google.maps.event.addListener(gPC, "click", mouseClickEvent);
+        }
+
+
+        function initialize() {
+            //alert("0");
+            var mapOptions = {
+                zoom: 13,
+                center: new google.maps.LatLng(22.44, 114.02),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            gMap = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+            google.maps.event.addListener(gMap, "click", mouseClickEvent);
+            //alert("3");
+            google.maps.event.addListener(gMap, "mousemove", mouseMoveEvent);
+
+            $("cboRecSum").height("120px");
+            gPtNum = 0;
+            addPlan();
+            loadKml(DATA_LINK);
+
+            KML_HEAD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+            kml_content = "";
+            KML_HEAD += " <kml xmlns=\"http://earth.google.com/kml/2.2\">";
+            KML_HEAD += " <Document> <name>HK Farm Fish Pond</name> ";
+            KML_HEAD += " <description>HK Farm Fish Pond</description> ";
+            KML_HEAD += " <Style id=\"stylePt\"> <IconStyle><Icon>";
+            KML_HEAD += " <href>http://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png</href>";
+            KML_HEAD += " </Icon>    </IconStyle>  </Style> ";
+            //alert (KML_HEAD);
+            
+            KML_TAIL += "</Document></kml>";
+
+
+
+            gPt_Array = new Array();
+            
+        }
+
+        function loadKml(url) {
+
+
+            gKMLLyr = new google.maps.KmlLayer(url);
+            
+            gKMLLyr.setMap(gMap);
+
+            
+            google.maps.event.addListener(gKMLLyr, "click", mouseClickEvent);
+            
+            google.maps.event.addListener(gKMLLyr, "mousemove", mouseMoveEvent);
+
+        }
+
+
+        
+
+        function GotoPlan(Plan_Info) {
+            //alert("sdds" + Plan_Info.Lat)
+            gMoveLoc = new google.maps.LatLng(Plan_Info.Lat, Plan_Info.Lng);
+            //alert("goto to " + Plan_Info.Name);
+            gMap.panTo(gMoveLoc);
+            gMap.setZoom(15);
+        }
+
+        function ToggleRecord() {
+            gRecording = !gRecording;
+            //alert("i am recording" + gRecording);
+            if (gRecording) 
+            {
+                document.getElementById("btnrecord").value = "停止記錄";
+                gMap.setOptions({ cursor: 'crosshair' });
+                gKMLLyr.setOptions({ cursor: 'crosshair' });
+                gPC.setOptions({ cursor: 'crosshair' });
+                gFLN.setOptions({ cursor: 'crosshair' });
+                gKTN.setOptions({ cursor: 'crosshair' });
+                //$("#cmdclear").attr('disabled', false);
+                //alert("!");
+                $("#txtrecord").removeAttr("disabled");
+                $("#btnclear").removeAttr("disabled");
+                
+          
+            }
+            else 
+            {
+                document.getElementById("btnrecord").value = "開始點圖記錄";
+                gMap.setOptions({ cursor: 'default' });
+                gKMLLyr.setOptions({ cursor: 'default' });
+                gPC.setOptions({ cursor: 'default' });
+                gFLN.setOptions({ cursor: 'default' });
+                gKTN.setOptions({ cursor: 'default' });
+                $("#txtrecord").attr("disabled", "disabled");
+                $("#btnclear").attr("disabled", "disabled");
+         
+
+            }
+        }
+
+
+        function TogglePlan(planstr) {
+
+
+            switch (planstr) {
+
+
+                case "KTN":
+                    if ($('#chkKTN').is(':checked')) {
+                        gKTN.setMap(gMap);
+                    }
+                    else {
+                        //alert("false")
+                        gKTN.setMap(null);
+                    }
+                    break;
+                case "FLN":
+                    if ($('#chkFLN').is(':checked')) {
+                        gFLN.setMap(gMap);
+                    }
+                    else {
+                        //  alert("false")
+                        gFLN.setMap(null);
+                    }
+                    break;
+                default:
+                    if ($('#chkPC').is(':checked')) {
+                        gPC.setMap(gMap);
+                    }
+                    else {
+                        // alert("false")
+                        gPC.setMap(null);
+                    }
+                    break;
+
+            }
+
+        }
+
+        function WhereAmI() {
+           // alert("Where am i");
+            var x = document.getElementById("lblInfo");
+           // alert("Locate me2");
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            }
+            else {
+                x.innerHTML = "<b>GPS not supported</b>";
+            }
+           // alert("Locate 3");
+        }
+
+
+        function showPosition(position1) {
+
+            //alert("showPosition !!");
+            var x = document.getElementById("lblInfo");
+           // alert(position1.coords.longitude.toFixed(DEC_PLACE));
+            //6 decimal place  = 1 deg = 100km,  * 0.000001 = 0.1 metre
+            x.innerHTML = "<b> Location: [" + position1.coords.longitude.toFixed(DEC_PLACE) + "," + position1.coords.latitude.toFixed(DEC_PLACE) + "]</b>";
+            
+
+            gMoveLoc = new google.maps.LatLng(position1.coords.latitude.toFixed(DEC_PLACE), position1.coords.longitude.toFixed(DEC_PLACE));
+           // alert(gMoveLoc.Lat);
+            gMap.panTo(gMoveLoc);
+            gMap.setZoom(18);
+           // alert("##");
+           // AddPositionOnMap(gMoveLoc);
+
+        }
+
+
+        //var gPt_Array;
+        //var gPtNum;
+
+
+
+        function ClearRecord() {
+
+            var i;
+            
+            if (confirm("You want to clear the point record?")) 
+            {
+
+                //alert (gPtNum)
+                for (i = 0; i < gPtNum; i++) {
+                    gPt_Array[i].setMap(null);
+
+                }
+                gPtNum = 0;
+                kml_content = "";
+                 $("#txtsummary").val('');
+               // alert("1");
+              //  $('#cboRecSum').val('');
+                document.getElementById("cboRecSum").innerHTML = "";
+                //alert("2");
+                $("#txtrecord").val('');
+                $("#btnclear").attr("disabled", "disabled");
+                // $("#linkdownload").attr("href", "data:text/json;charset=utf-8," + KML_HEAD + kml_content + KML_TAIL);
+				
+                //$("#linkdownload").attr("href", "data:application/zip;charset=utf-8," + KML_HEAD + kml_content + KML_TAIL);
+//                $("#linkdownload").attr("href", "data:application/vnd.google-earth.kml+xml;charset=utf-8," + encodeURIComponent(KML_HEAD + kml_content + KML_TAIL));
+                $("#linkdownload").attr("href", "data:application/x-json;base64;charset=utf-8," + encodeURIComponent(KML_HEAD + kml_content + KML_TAIL));
+
+                $("#linkdownload").attr("target", "_blank");
+       
+    
+            }
+//            else {
+//                alert("Nothing");
+//            }
+        }
+
+
+        function AddPositionOnMap(pt) {
+
+            var currentTime = new Date()
+            var hr1 = currentTime.getHours()
+            var min1 = currentTime.getMinutes()
+            var mon1 = currentTime.getMonth();
+            var date1 = currentTime.getDate();
+            var year1 = currentTime.getFullYear();
+            var titlestr;
+            var tempstr;
+            var infostr;
+            //alert("AddPositionOnMap S !!");
+            infostr = $("#txtrecord").val();
+            titlestr = "Pt." + (gPtNum + 1) + ":" + infostr + "\n";
+            titlestr +=" Time:" + year1 + "-" + mon1 + "-" + date1 + " " + hr1 + ":" + min1 
+           // alert(titlestr);
+            var marker = new google.maps.Marker
+            ({
+                position: pt,
+                title: titlestr
+            });
+            gPt_Array[gPtNum] = marker;
+            
+
+            tempstr = "<option value=\"" + gPtNum + "\" >Rec." + (gPtNum + 1) + ":" + infostr +  "</option>";
+            
+            $("#cboRecSum").append(tempstr);
+
+            gPt_Array[gPtNum].setMap(gMap);
+
+
+
+            kml_content += "<Placemark><name> Point " + (gPtNum + 1)+ ":" + infostr + "</name> ";
+            kml_content += "<description>" + titlestr + "</description>";
+            kml_content += "<styleUrl>#stylePt</styleUrl>";
+            kml_content += "<Point><coordinates>";
+            kml_content += pt.lng() + "," + pt.lat() + ",0.000000";
+            kml_content += "</coordinates></Point>";
+            kml_content += "</Placemark>";
+
+
+
+            
+            //onclick="window.location.href='data:Application/octet-stream;content-di
+            //application/octet-stream
+            //data:application/octet-stream,
+            
+            //$("#linkdownload").attr("href", "data:application/vnd.google-earth.kml+xml;;charset=utf-8," + encodeURIComponent(KML_HEAD + kml_content + KML_TAIL));
+			//$("#linkdownload").attr("href", "data:application/octet-stream;content-disposition:attachment;filename=file1.txt," + encodeURIComponent(KML_HEAD + kml_content + KML_TAIL));
+			$("#linkdownload").attr("href", "data:text;charset=utf-8," + encodeURIComponent(KML_HEAD + kml_content + KML_TAIL));
+            
+            
+            
+            $("#linkdownload").attr("target", "_blank");
+            
+            $("#txtsummary").val(encodeURIComponent(KML_HEAD + kml_content + KML_TAIL));
+            $("#txtsummary").val("fdff");
+            
+            
+            
+            $("#btnclear").removeAttr("disabled");
+            gPtNum++;
+            currentTime = null;
+            marker = null;
+           
+        }
+
+       
+        
+
+        function MiniControl() {
+           // alert("!");
+            gControl = !gControl;
+            if (gControl) {
+
+                $("#map_control_min").html("放大...");
+                $("#map_control").hide();
+            }
+            else {
+                $("#map_control_min").html("縮小...");
+                $("#map_control").show();
+                
+            }
+
+        }
+
+        function mouseClickEvent(e) {
+
+            gClickLoc = e.latLng;
+            if (gRecording) {
+               // alert("mouseClickEvent");
+                AddPositionOnMap(gClickLoc);
+                //e.latLng.lng()
+                //alert("mouseClickEvent ok");
+            }
+        }
+
+        function mouseMoveEvent(e) {
+
+            var tempstr;
+            var Location;
+
+            //var lblmapinfo;
+            //window.alert("11");
+            //tempstr = "[" + Math.round(gMap.getCenter().lat()*100000)/100000 +  "," + Math.round(gMap.getCenter().lng()*100000)/100000  + "]";
+            gMoveLoc = e.latLng;
+            tempstr = "<b> Location: [" + gMoveLoc.lng().toFixed(DEC_PLACE) + "," + gMoveLoc.lat().toFixed(DEC_PLACE) + "]</b>";
+
+            $("#lblInfo").html(tempstr);
+
+        }
+
+        function changeRec() {
+            //alert("changeRec " );
+            //gMap.panTo(gPt_Array[pt_idx].position);
+            //gMap.setZoom(18);
+            var pt_idx;
+            pt_idx = document.getElementById("cboRecSum").selectedIndex;
+            gMap.panTo(gPt_Array[pt_idx].position);
+            gMap.setZoom(18);
+        }
+
+		function DownloadKML() 
+		{
+			var txtbox;
+			var expIFrame;
+			var doc;
+			if (jQuery.browser.msie)
+			{
+				//alert ("it is IE use data");
+				$("#txtsummary").val("ddefrfrf");
+				//alert ($("#txtsummary").val());
+				txtbox = document.getElementById("txtsummary");
+				//alert ("A");
+				//alert (txtbox.innerHTML);
+				//alert ("B");
+				expIFrame =document.exportiframe;
+				//alert ("C1");
+				doc = expIFrame.document;
+				//alert ("D");
+				
+				txtbox.execCommand('SaveAs', null, 'RecordKML.txt');
+				//alert ("E");
+			//	document.execCommand('SaveAs', 'true', 'mycodes.kml.txt');
+			}
+			else
+			{
+				alert ("it is not IE");
+		
+			}
+			
+		}
+
+
+        
+    </script>
+    <style type="text/css">
+        
+        div.tran1
+        {
+            filter:alpha(opacity=80);
+        }
+    </style>
+  </head>
+  <body onload="initialize()">
+    
+    <div id="map_canvas" style="position: absolute; left: 20px; top: 20px; width: 1000px; height: 600px; "></div>
+    <div id="map_control_min" onclick="MiniControl()" style="  z-index:999 ;background-color:#AAAAAA;  position: absolute; left: 950px; top: 100px; width:50px; height: 30px; padding: 0px; "> 縮小...
+    </div>
+    <div class="tran1" id="map_control" style=" background-color:#99EEBB; opacity:0.8; position: absolute; left: 750px; top: 100px; width:250px; height: 250px; padding: 10px; ">
+        <p>
+            <input name="btnKTN" id="btnKTN" type="button" value="古洞北" onclick="GotoPlan(gKTN_Info)"/>
+            <input name="chkKTN" id="chkKTN" type="checkbox" checked="checked" onclick="TogglePlan('KTN')"/>
+        </p>
+        <p>
+            <input name="btnFLN" id="btnFLN" type="button" value="粉嶺北" onclick="GotoPlan(gFLN_Info)"/>
+            <input name="chkFLN" id="chkFLN" type="checkbox" checked="checked" onclick="TogglePlan('FLN')"/>
+        </p>
+        <p>
+            <input name="btnPC" id="btnPC" type="button" value="坪輋/打鼓嶺" onclick="GotoPlan(gPC_Info)"/>
+            <input name="chkPC" id="chkPC" type="checkbox"  onclick="TogglePlan('PC')" 
+                checked="checked"/>
+        </p>
+        <p>
+            <input id="btnwhereami" type="button" value="我係邊度?" onclick="WhereAmI()"/>
+        </p>
+
+        <div id="lblInfo">---</div> 
+        
+        <p>
+         
+            <input style="display:none"id="btnrecord" name="btnrecord" type="button" value="開始點圖記錄" onclick="ToggleRecord()"/>
+            <br />
+            <div style="display:none" >輸入資料: <input  id="txtrecord" name="txtrecord" type="text" disabled="disabled"/><br />
+            </div>
+            <input style="display:none"id="btnclear" name="btnclear" type="button" value="清除" onclick="ClearRecord()"  disabled="disabled"/> <br />
+            
+            <a style="display:none"id="linkdownload" href=""> 下載 GoogleMap KML</a> <br />
+            <select style="display:none" onChange="changeRec()" id="cboRecSum" name="cboRecSum" size="10"  
+                style="width: 200px"  >
+            </select>
+            <textarea  style="display:none" id="txtsummary" cols="25" rows="10"></textarea>
+			<!-- 
+			<input id="btntest" type="button" value="test" onclick="DownloadKML()"/>            
+            <input id="Button1" type="button" value="button" onclick="document.execCommand('SaveAs',true,'file.html');"/>
+            -->
+        </p>
+    </div>
+  </body>
+</html>

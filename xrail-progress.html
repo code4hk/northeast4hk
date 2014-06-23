@@ -1,0 +1,395 @@
+  <style>
+  body {
+    padding: 0;
+    margin: 0;
+    overflow:hidden;
+  }
+  html, body{
+    height: 90%;
+    width: 100%;
+  }
+  .map-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .xrail-container {
+    height: 100%;
+    width: 100%;
+  }
+  
+  </style>
+
+  <style>
+
+  .goog-slider-horizontal {
+    height: 18px;
+  }
+  .goog-slider {
+    position: relative;
+    outline: 0;
+  }
+  .goog-slider-horizontal .goog-slider-scale {
+    border-top: 1px solid #ccc;
+    top: 8px;
+    width: 100%;
+  }
+
+  .goog-slider-scale {
+    position: absolute;
+  }
+  .rulerResnum {
+    position: absolute;
+    top: 4px;
+
+    height: 9px;
+    padding: 0;
+    margin: 0;
+    z-index: -1;
+  }
+  .slmarker {
+    border-left: 1px solid #d0d0d0;
+    display: inline-block;
+    height: 9px;
+    position: absolute;
+    width: 38px;
+    z-index: -1;
+  }
+
+  .goog-slider ol, .goog-slider li{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font: inherit inherit 100% inherit;
+    vertical-align: baseline;
+    list-style: none;
+  }
+  .goog-slider li {
+    color: #343434;
+    cursor: default;
+    float: left;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 17px;
+    margin-left: -1px;
+    position: relative;
+    text-align: left;
+    top: 20px;
+    width: 40px;
+
+  }
+  #map{
+    height:100%;
+    margin-top:-20px;
+  }
+  .info-container{
+    width:25%;
+  }
+
+.title{
+    position:fixed;
+    top: 57rem;
+    left: 1rem;
+    text-align:left;
+}
+
+  .charts{
+    position:fixed;
+    top: 8rem;
+    right: 0;
+    background-color: white;
+    height: 25rem;
+    box-shadow: 0.6rem 0.6rem 3px rgba(0,0,0,.25);
+    margin-right: 1rem;
+  }
+
+  .general-info{
+    position:fixed;
+    top: 36rem;
+    right: 0;
+    background-color: white;
+    height: 25rem;
+    box-shadow: 0.6rem 0.6rem 3px rgba(0,0,0,.25);
+    margin-right: 1rem;
+
+    overflow-y: scroll;
+
+  }
+
+
+  slider {
+    display:     block;
+    position:    relative;
+    height:      30px;
+    width:       500px;
+  }
+
+  slider span.bar {
+    height:     50%;
+    z-index:    0;
+    background: #eee;
+    left:       0;
+    top:        25%;
+    cursor:     pointer;
+  }
+
+  slider span.bar.selection, slider span.bar.unselected {
+  }
+
+  slider span.bar.selection {
+    background: #0a0;
+    opacity:    0.5;
+  }
+
+  slider span.bar.unselected {
+    width:      auto;
+    background: #a00;
+    opacity:    0.5;
+  }
+
+  slider span.pointer {
+    cursor:           pointer;
+    width:            15px;
+    top:              0;
+    bottom:           0;
+    background-color: #00a;
+  }
+
+  slider span.pointer:hover {
+  }
+
+  slider span.pointer.active {
+  }
+
+  slider span.bubble {
+    f-size:   0.7em;
+    line-height: 1.4em;
+    font-family: sans-serif;
+    text-align:  center;
+    text-shadow: none;
+    top:         -1.3em;
+    cursor:      pointer;
+  }
+
+  slider span.bubble.selection, slider span.bubble.limit {
+    top: 25%;
+  }
+
+  slider span.bubble.selection {
+  }
+
+  slider span.bubble.limit {
+    margin-left: -100000px;
+
+  }
+
+  slider span.bubble.low, slider span.bubble.high {
+    margin-left: -100000px;
+  }
+
+  ::-ms-tooltip {
+    display: none;
+  }
+
+  .time-slider{
+    width: 100%;
+  }
+
+
+  .time-slider-buckets{
+    padding-right: 0px;
+    padding-left: 0px;
+
+    height:20px;
+    width:100%;
+    margin-right: 0px;
+    margin-left: 0px;
+    /*border-color:#eee;*/
+
+
+  }
+
+  .time-slider-buckets .bucket{
+    background: #eee;
+    border-width:1px;
+    border-color:gray;
+    border-style:dashed;
+
+    padding-left:0px;
+    padding-right:0px;
+
+    width:12.5%;
+    display:inline-block;
+
+  }
+
+  .slider-container {
+    /*padding-top:2rem;*/
+    -webkit-touch-callout: none;
+    -webkit-user-select:   none;
+    -khtml-user-select:    none;
+    -moz-user-select:      -moz-none;
+    -ms-user-select:       none;
+    user-select:           none;
+  }
+
+
+  .date-container h2{
+    margin-top:0;
+  }
+
+  .xrail-progress-container{
+    margin-top:-20px;
+  }
+
+
+  .nvtooltip.xy-tooltip{
+    margin-left:-10rem;
+  }
+
+  .displayedTotal h4{
+    margin-top:0.4rem;
+  }
+  </style>
+
+
+
+<link rel="stylesheet" type="text/css" href="lib/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+  <!-- controls="controls" -->
+<div cg-busy="loadingConfig"  class="xrail-container" ng-intro-options="IntroOptions" ng-intro-method="startIntro" ng-intro-autostart="true">
+  
+  <div class="map-container">
+    <!--  -->
+    <leaflet class="col-xs-12 col-md-12" id="map" defaults="{maxZoom: 11}" markers="displayedMarkers" center="westKowloon" layers="layers"  geojson="geojson"> </leaflet>
+    <!-- <div class="col-md-2 info-container">Testing</div> -->
+  </div>
+
+  <div class="col-xs-5 col-md-4 introduction-text">
+  </div>
+  <div  class="col-xs-5 col-md-4 general-info">
+  <h5 ng-click="startIntro(6)"><i class="fa fa-info-circle"></i> <b>工程總進度</b></h5>
+  <div ng-repeat="overallEvent in displayedOverall">
+<!--   <span ng-show="overallEvent.contract!= 'Overall' ">{{overallEvent.contract}}</span><span ng-show="overallEvent.contractName">{{overallEvent.contractName}}</span>  -->
+
+  <h6><span class="pull-right">{{overallEvent.time}}</span></h6>
+  <div><i ng-show="overallEvent.isDelay" style="color:red" class="fa fa-exclamation-triangle"></i>{{overallEvent.message}}</div>
+  <span ng-bind-html="overallEvent.sourceTag"></span>
+  </div>
+  </div>
+  <div class="col-xs-5 col-md-4 charts">
+            <h5 ng-click="startIntro(5)" ><i class="fa fa-info-circle"></i> <b>工程進度及支出表</b></h5>
+
+          <div class="row">
+          <div class="col-xs-10">
+            
+          <nvd3-bullet-chart
+                data="expenseChartData"
+                  id="expenseChartData"
+                  margin="{left:75,top:5,bottom:35,right:10}"
+                  width="400"
+                  height="60"
+                  interactive="true"
+                  tooltips="true"
+                  tooltipcontent="expenseDataTooltipContentFx()"
+                  noData="載入中..."
+                  >
+                    <svg></svg>
+              </nvd3-bullet-chart>
+          </div>
+          <div ng-show="displayExpenseData.expenseTotal!==0"  class="col-xs-2 displayedTotal" >
+<h4>{{displayExpenseData.expenseTotal | number:2}}</h4>
+          </div>
+          <div ng-show="displayExpenseData.expenseTotal===0" class="col-xs-2 displayedTotal" >
+            <h5>無資料</h5>
+            </div>
+          </div>
+          <div class="row">
+          <div class="col-xs-10">
+          <nvd3-bullet-chart
+                data="claimData"
+                  id="exampleId"
+                  margin="{left:75,top:5,bottom:35,right:10}"
+                  width="450"
+                  height="60"
+                  interactive="true"
+                         tooltips="true"
+                          tooltipcontent="claimDataTooltipContentFx()"
+                          noData="載入中..."
+                  >
+                    <svg></svg>
+              </nvd3-bullet-chart>
+            </div>
+            <div ng-show="claimData.ranges[2]===0 && !displayClaimData.noInfo" class="col-xs-2 displayedTotal" >
+            <h5>無申索</h5>
+            </div>
+            <div ng-show="displayClaimData.noInfo" class="col-xs-2 displayedTotal" >
+            <h5>無資料</h5>
+            </div>
+            <div ng-show="claimData.ranges[2]!==0" class="col-xs-2 displayedTotal" >
+               <h4>{{displayClaimData.unresolvedClaimAmountTotal | number:2}}</h4>
+            </div>
+              <!-- 已解決申索發放率:50% -->
+          </div>
+          <div class="row">
+          <div class="col-xs-10">
+            <nvd3-bullet-chart
+                  data="emergencyData"
+                    id="emergencyData"
+                    margin="{left:75,top:5,bottom:35,right:10}"
+                    width="450"
+                    height="60"
+                    interactive="true"
+                           tooltips="true"
+                    tooltipcontent="emergencyDataTooltipContentFx()"
+                    noData="載入中..."
+                    >
+                      <svg></svg>
+                </nvd-bullet-chart>
+          </div>
+          <div ng-show="emergencyData.ranges[1]===0" class="col-xs-2 displayedTotal" >
+            <h5>無資料</h5>
+            </div>
+            <div ng-show="emergencyData.ranges[1]!==0" class="col-xs-2 displayedTotal" >
+               <h4>{{displayEmergencyData.emergencyBalance | number:2}}</h4>
+            </div>
+            </div>
+  </div>
+    <div class="col-xs-5 col-md-4 title" id="title-container">
+    <h3><b>高鐵工程進度時間表</b>&nbsp;<p class="btn btn-primary" style="line-height: 1.2rem;">資料更新中</p></h3>
+    </div>
+  <div class="row">
+    <div id="slider-container" class="slider-container col-xs-10">
+      <!-- stretch="1"  -->
+      <slider class="time-slider" floor="1262275200"  step-width="1000000" ceiling="1400599247" ng-model='value' ></slider>
+</div>
+<div  class="date-container col-md-2">
+  <h2>
+    {{value * 1000| date:'yyyy-MM'}}
+  </h2>
+</div>
+      <div>
+        <!-- <div class="goog-slider goog-slider-horizontal" id="result_slider"  role="slider" aria-valuemin="0" aria-valuemax="90" aria-valuenow="0" tabindex="0" aria-disabled="true"><div class="goog-slider-scale"></div><div class="goog-slider-thumb" style="left: 0px;"></div> -->
+        <!-- <div class="rulerResnum" id="slruler">
+          <div class="slmarker" style="left:0">
+          </div><div class="slmarker" style="left:39px"></div><div class="slmarker" style="left:79px"></div><div class="slmarker" style="left:119px"></div><div class="slmarker" style="left:159px"></div>
+          <div class="slmarker" style="left:359px"></div></div><div style="clear:both"></div>
+
+          <ol>
+            <li>2010-06</li><li>2010-07</li><li>30</li><li>40</li><li style="width:188px">50</li><li style="width:6px">100</li>
+          </ol><div style="clear:both"></div><div style="position:absolute;height:30px;width:100%;top:36px">
+            <div class="sllabel slfast">Faster</div><div class="sllabel slslow">Slower</div></div>
+            <div style="clear:both"></div></div>
+
+          </div> -->
+
+
+
+        </div>
+
+
+        <span >
+
+        </span>
+        <!-- <span>{{value}} {{chosenTimeWindow}} </span> -->
+</div>

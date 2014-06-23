@@ -1,0 +1,31 @@
+{
+  "name": "mtr4hk",
+  "version": "0.1.0",
+  "ignore": [
+    "app/lib/",
+    "**/.*",
+    "node_modules",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": null,
+    "angular-route": "1.2.*",
+    "angular-mocks": "1.2.*",
+    "ng-i18next": "0.3.1",
+    "angular-animate": "~1.2.16",
+    "modernizr": "~2.8.0",
+    "angular-bootstrap": "~0.11.0",
+    "momentjs": "~2.6.0",
+    "venturocket-angular-slider": "~0.3.2",
+    "leaflet-dist": "*",
+    "Leaflet.awesome-markers": "~2.0.2",
+    "leaflet.markercluster": "0.4.0",
+    "angular-leaflet-directive":"*",
+    "angularjs-nvd3-directives": "~0.0.7",
+    "angular-intro.js": "~1.0.3",
+    "angular-busy": "~4.0.4",
+        "q":"*",
+        "underscore":"*"
+  }
+}
