@@ -1,0 +1,38 @@
+  body {
+    padding: 0;
+    margin: 0;
+    overflow:hidden;
+  }
+  html, body{
+    height: 100%;
+    width: 100%;
+  }
+  .map-container {
+    height: 70rem;
+    padding-bottom:10rem;
+    /*width: 50%;*/
+  }
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+.code4hk-badge a{
+float: left;
+margin-right: 1rem;
+margin-top: 1rem;
+}
+
+.area-info{
+  position: absolute;
+font-size: 4rem;
+z-index: 9999;
+margin-top: 1rem;
+
+bottom:10rem;
+/*background: rgba(255, 255, 255, 0.9);*/
+background:gray;
+color:white;
+border-radius: 5px;
+margin-left:1rem;
+}

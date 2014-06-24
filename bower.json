@@ -21,11 +21,11 @@
     "leaflet-dist": "*",
     "Leaflet.awesome-markers": "~2.0.2",
     "leaflet.markercluster": "0.4.0",
-    "angular-leaflet-directive":"*",
+    "angular-leaflet-directive": "*",
     "angularjs-nvd3-directives": "~0.0.7",
     "angular-intro.js": "~1.0.3",
     "angular-busy": "~4.0.4",
-        "q":"*",
-        "underscore":"*"
+    "q": "1.0.1",
+    "underscore": "*"
   }
 }

@@ -20,6 +20,9 @@ gulp.task('bower', function() {
 
 });
 
+//Step:
+// merge-geojson-features
+
 gulp.task('default', ['bower', 'listen'], function() {
     gulp.src(publicFolder + '*')
         .pipe(watch())
