@@ -12,24 +12,36 @@
             <accordion-heading>
             土地用途分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
+        <!-- <div ng-if="!areaSelected.name">選擇地區</div> -->
+        <!-- ng-if="areaSelected.name" -->
         <div >
+        <h5>總面績：{{areaSelected.sizeByType.total.size}} 公頃</h5>
       <nvd3-pie-chart
-          data="exampleData"
+          data="chartByAreaData"
           id="exampleId"
           width="550"
           height="350"
           x="xFunction()"
           y="yFunction()"
-          showLabels="true">
+          showLabels="true"
+          showLegend="true"
+          tooltips="true"
+          labelType="percent"
+          tooltipcontent="areaChartTooltipFunction()"
+          >
           <svg></svg>
       </nvd3-pie-chart>
+      <span>規劃人口：{{areaSelected.population}}</span>
     </div>
     </accordion-group>
     <accordion-group is-open="status.open">
         <accordion-heading>
-            I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+           相關新聞報導<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
         This is just some content to illustrate fancy headings.
+        <ul >
+          <li ng-repeat="aNews in areaSelected.news"></li>
+        </ul>
     </accordion-group>
   </accordion>
       
