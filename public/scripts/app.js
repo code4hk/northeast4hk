@@ -163,7 +163,7 @@ config(['$routeProvider',
             function _getDisplayedAreaChart(){
                 var area = [];
                 _.each($scope.areaSelected.sizeByType,function(v,k) {
-                    if(k==="total"){
+                    if(k==="total" || k==="population"){
                         return;
                     }
                     console.log(k);
@@ -182,8 +182,6 @@ config(['$routeProvider',
                 }
                 $scope.areaSelected = areaInfos[$scope.areaSelectedId];
                 $scope.chartByAreaData=_getDisplayedAreaChart();
-
-
             })
 
             $scope.chartByAreaData = [];
@@ -195,12 +193,10 @@ config(['$routeProvider',
 
             spreadSheetDataService.getAreaByDetails().then(function(data) {
                 // areaInfos
-                $scope.areaSelectedId = "total";
 
                 // var dataByArea
                 console.log(data);
                 _.each(data,function(aRow) {
-                    console.log(aRow);
                     var areaId  = aRow.gsx$areaid.$t;
                     if(!areaId){
                         return;
@@ -217,23 +213,30 @@ config(['$routeProvider',
                     };
                 });
 
-                    areaInfos["total"]={};
+                    areaInfos["total"]={
+                        name:"total"
+                    };
+
                     areaInfos["total"].news={};
                     areaInfos["total"].sizeByType={};
                 _.each(areaInfos,function(aAreaInfo) {
                     _.each(aAreaInfo.sizeByType,function(v,k) {
-                        var totalSizeByType =areaInfos["total"].sizeByType[k]
-                        if(totalSizeByType){
-                            totalSizeByType += parseFloat(v.size); 
+
+                        if(!areaInfos["total"].sizeByType[k]){
+                             areaInfos["total"].sizeByType[k]={};
+                            areaInfos["total"].sizeByType[k].key = v.key; 
+                            areaInfos["total"].sizeByType[k].size = 0;
                         }
-                        else{
-                            totalSizeByType = 0;
+                        if(parseFloat(v.size) ){
+
+                            areaInfos["total"].sizeByType[k].size += parseFloat(v.size); 
                         }
                     })
                 })
 
                 console.log(areaInfos);
 
+                $scope.areaSelectedId = "total";
 
 
             }).fail(function(err) {

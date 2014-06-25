@@ -16,7 +16,8 @@
         <!-- ng-if="areaSelected.name" -->
         <div >
         <h5>總面績：{{areaSelected.sizeByType.total.size}} 公頃</h5>
-      <nvd3-pie-chart
+        <div ng-if="areaSelectedId!== 'fln_golf'">
+      <nvd3-pie-chart 
           data="chartByAreaData"
           id="exampleId"
           width="550"
@@ -32,6 +33,8 @@
           <svg></svg>
       </nvd3-pie-chart>
       <span>規劃人口：{{areaSelected.population}}</span>
+          
+        </div>
     </div>
     </accordion-group>
     <accordion-group is-open="status.open">
