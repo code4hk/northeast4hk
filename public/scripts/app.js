@@ -26,16 +26,6 @@ config(['$routeProvider',
         function($scope) {
             $scope.oneAtATime = true;
 
-            $scope.groups = [{
-                title: 'Dynamic Group Header - 1',
-                content: 'Dynamic Group Body - 1'
-            }, {
-                title: 'Dynamic Group Header - 2',
-                content: 'Dynamic Group Body - 2'
-            }];
-
-            $scope.items = ['Item 1', 'Item 2', 'Item 3'];
-
             $scope.addItem = function() {
                 var newItemNo = $scope.items.length + 1;
                 $scope.items.push('Item ' + newItemNo);
@@ -91,6 +81,38 @@ config(['$routeProvider',
             lng: 114.111,
             zoom: 13
         };
+
+
+        $scope.displayedMarkers = {};
+
+        $scope.displayedMarkers["a"] = _getMarker();
+
+
+        function _getMarker() {
+            // return {
+            //            lat: event.lat !== "" ? parseFloat(event.lat) : 0,
+            //            lng: event.lng !== "" ? parseFloat(event.lng) : 0,
+            //            // layer: event.contract,
+            //            group:event.contract,
+            //            message: _getMessage(event),
+            //            focus: false,
+            //            draggable: false,
+            //            // fa-road,legal,gear
+            //            icon: {
+            //                type: 'awesomeMarker',
+            //                icon: 'road',
+            //                prefix: 'fa',
+            //                markerColor: event.isDelay ? 'red' : 'darkblue'
+            //            }
+            //        };
+
+            return {
+                lat: 22.49,
+                lng: 114.101,
+                // message: 'hi',
+                focus: true
+            }
+        }
 
         $scope.defaults = {
             // crs: 'Simple',
@@ -154,85 +176,107 @@ config(['$routeProvider',
             }
             $scope.areaChartTooltipFunction = function() {
                 return function(key, x, obj, e, graph) {
-                    return   '<h4>' + key + '</h4>' +
-                        '<p>' +  x +' 公頃 '+obj.point.percent+'%</p>'
+                    return '<h4>' + key + '</h4>' +
+                        '<p>' + x + ' 公頃 ' + obj.point.percent + '%</p>'
                 }
-                
+
             };
 
-            function _getDisplayedAreaChart(){
+            function _getDisplayedAreaChart() {
                 var area = [];
-                _.each($scope.areaSelected.sizeByType,function(v,k) {
-                    if(k==="total" || k==="population"){
+                _.each($scope.areaSelected.sizeByType, function(v, k) {
+                    if (k === "area_total" || k === "population") {
                         return;
                     }
                     console.log(k);
-                    var percent = v.size / $scope.areaSelected.sizeByType.total.size * 100;
+                    var size=0;
+                    var percent=0;
+                    if(parseFloat(v.size)){
+                        size = parseFloat(v.size).toFixed(2);
+                    }
+                    if(size>0){
+                         percent= (size / $scope.areaSelected.sizeByType["area_total"].size * 100 ).toFixed(2);
+                    }
                     area.push({
-                        key:v.key,
-                        y:v.size,
-                        percent: percent.toFixed(2)
+                        key: v.key,
+                        y: size,
+                        percent: percent
                     })
                 });
                 return area;
             }
-            $scope.$watch('areaSelectedId',function(newVal) {
-                if(!newVal){
+            $scope.$watch('areaSelectedId', function(newVal) {
+                if (!newVal) {
                     return;
                 }
                 $scope.areaSelected = areaInfos[$scope.areaSelectedId];
-                $scope.chartByAreaData=_getDisplayedAreaChart();
+                $scope.chartByAreaData = _getDisplayedAreaChart();
             })
-
             $scope.chartByAreaData = [];
 
-                _.each(areaInfos,function(v,k){
-                    areaInfos[k].news={};
-                    areaInfos[k].sizeByType={};
-                });
+            _.each(areaInfos, function(v, k) {
+                areaInfos[k].news = {};
+                areaInfos[k].sizeByType = {};
+            });
+
+            function _generateAreaTotal() {
+                areaInfos["total"] = {
+                    name: "古洞北及粉嶺北"
+                };
+
+                areaInfos["total"].news = {};
+                areaInfos["total"].sizeByType = {};
+                _.each(areaInfos, function(aAreaInfo, areaInfosId) {
+                    if (!_.contains(['s_fln_1', 's_ktn_1'], areaInfosId)) {
+                        return;
+                    }
+
+                    _.each(aAreaInfo.sizeByType, function(v, k) {
+
+                        if (!areaInfos["total"].sizeByType[k]) {
+                            areaInfos["total"].sizeByType[k] = {};
+                            areaInfos["total"].sizeByType[k].key = v.key;
+                            areaInfos["total"].sizeByType[k].size = 0;
+                        }
+                        if (parseFloat(v.size)) {
+
+                            areaInfos["total"].sizeByType[k].size += parseFloat(v.size);
+                        }
+                    })
+                })
+            };
 
             spreadSheetDataService.getAreaByDetails().then(function(data) {
                 // areaInfos
 
                 // var dataByArea
                 console.log(data);
-                _.each(data,function(aRow) {
-                    var areaId  = aRow.gsx$areaid.$t;
-                    if(!areaId){
+                _.each(data, function(aRow) {
+                    var areaId = aRow.gsx$areaid.$t;
+                    if (!areaId) {
                         return;
                     }
-                    if(!_.contains(_.keys(areaInfos),areaId)){
+                    if (!_.contains(_.keys(areaInfos), areaId)) {
                         return;
+                    }
+                    var sizeKey = aRow.gsx$typelabeleng.$t;
+                    if(sizeKey.match(/area_.+/)){
+                        areaInfos[areaId].sizeByType[sizeKey] = {
+                            key: aRow.gsx$typelabeltc.$t,
+                            size: aRow.gsx$areasize.$t
+                        };
+
                     }
                     console.log(areaId);
                     console.log(areaInfos[areaId].sizeByType);
 
-                    areaInfos[areaId].sizeByType[aRow.gsx$typelabeleng.$t]={
-                        key : aRow.gsx$typelabeltc.$t,
-                        size : aRow.gsx$areasize.$t
-                    };
+
                 });
 
-                    areaInfos["total"]={
-                        name:"total"
-                    };
+                //calculating total
+                _generateAreaTotal();
 
-                    areaInfos["total"].news={};
-                    areaInfos["total"].sizeByType={};
-                _.each(areaInfos,function(aAreaInfo) {
-                    _.each(aAreaInfo.sizeByType,function(v,k) {
 
-                        if(!areaInfos["total"].sizeByType[k]){
-                             areaInfos["total"].sizeByType[k]={};
-                            areaInfos["total"].sizeByType[k].key = v.key; 
-                            areaInfos["total"].sizeByType[k].size = 0;
-                        }
-                        if(parseFloat(v.size) ){
-
-                            areaInfos["total"].sizeByType[k].size += parseFloat(v.size); 
-                        }
-                    })
-                })
 
                 console.log(areaInfos);
 
@@ -305,29 +349,6 @@ config(['$routeProvider',
                 }
             }
         };
-
-        $scope.exampleData = [{
-            key: "One",
-            y: 5
-        }, {
-            key: "Two",
-            y: 2
-        }, {
-            key: "Three",
-            y: 9
-        }, {
-            key: "Four",
-            y: 7
-        }, {
-            key: "Five",
-            y: 4
-        }, {
-            key: "Six",
-            y: 3
-        }, {
-            key: "Seven",
-            y: 9
-        }];
 
         $scope.xFunction = function() {
             return function(d) {

@@ -1,7 +1,7 @@
 
   <div class="map-container col-xs-12 col-md-6">
   <div class="area-info">{{areaSelected.name}}</div>
-   <leaflet  id="map" defaults="defaults" center="defaultCenter" layers="layers" geojson="displayedGeoJSON"> </leaflet>
+   <leaflet  id="map" defaults="defaults" center="defaultCenter" layers="layers" geojson="displayedGeoJSON"  markers="displayedMarkers"> </leaflet>
   </div>
   <div ng-controller="MapInfoAccordionCtrl" class="info-container col-xs-12 col-md-6">
   <accordion close-others="oneAtATime">
@@ -39,6 +39,13 @@
     </accordion-group>
     <accordion-group is-open="status.open">
         <accordion-heading>
+           公私營房屋分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+        </accordion-heading>
+        <div>根據<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">文件</a>最新數字</div>
+        
+    </accordion-group>
+    <accordion-group is-open="status.open">
+        <accordion-heading>
            相關新聞報導<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
         This is just some content to illustrate fancy headings.
@@ -46,6 +53,7 @@
           <li ng-repeat="aNews in areaSelected.news"></li>
         </ul>
     </accordion-group>
+
   </accordion>
       
   </div>
