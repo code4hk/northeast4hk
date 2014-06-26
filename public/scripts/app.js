@@ -26,14 +26,11 @@ config(['$routeProvider',
         function($scope) {
             $scope.oneAtATime = true;
 
-            $scope.addItem = function() {
-                var newItemNo = $scope.items.length + 1;
-                $scope.items.push('Item ' + newItemNo);
-            };
-
             $scope.status = {
                 isFirstOpen: true,
-                isFirstDisabled: false
+                isFirstDisabled: false,
+                isPPChartOpen:false,
+                isNewsOpen:false
             };
 
         }
@@ -182,6 +179,37 @@ config(['$routeProvider',
 
             };
 
+                var HOUSING_TYPES = ["sub_public_mix","sub","private"];
+
+            function _getDisplayedPublicPrivateChart(calUnit){
+                function getKey(type){
+                    return "housing_"+type+"_"+calUnit;
+                }
+                var area = [];
+
+                var dataMap = $scope.areaSelected.dataMap; 
+
+                var housingTotal = 0;
+                _.each(HOUSING_TYPES,function(type) {
+                    var key = getKey(type);
+                    housingTotal+=parseFloat(dataMap[key]).toFixed(2);  
+                })
+
+                _.each(HOUSING_TYPES,function(type) {
+                    var key = getKey(type);
+                    if(dataMap[key]){
+                        area.push({
+                            key: key,
+                            y: dataMap[key],
+                            percent : (dataMap[key] / housingTotal * 100)
+                        })
+                        
+                    }
+                });
+
+                return area;
+            }
+
             function _getDisplayedAreaChart() {
                 var area = [];
                 _.each($scope.areaSelected.sizeByType, function(v, k) {
@@ -211,21 +239,32 @@ config(['$routeProvider',
                 }
                 $scope.areaSelected = areaInfos[$scope.areaSelectedId];
                 $scope.chartByAreaData = _getDisplayedAreaChart();
+
+
+                $scope.ppChartBySize = _getDisplayedPublicPrivateChart("size");
+                $scope.ppChartByUnit = _getDisplayedPublicPrivateChart("unit");
             })
             $scope.chartByAreaData = [];
 
             _.each(areaInfos, function(v, k) {
                 areaInfos[k].news = {};
                 areaInfos[k].sizeByType = {};
+                areaInfos[k].dataMap={};
             });
 
-            function _generateAreaTotal() {
-                areaInfos["total"] = {
+             areaInfos["total"] = {
                     name: "古洞北及粉嶺北"
                 };
 
                 areaInfos["total"].news = {};
                 areaInfos["total"].sizeByType = {};
+                areaInfos["total"].dataMap = {
+                    population:0
+                };
+                
+
+            function _generateAreaTotal() {
+               
                 _.each(areaInfos, function(aAreaInfo, areaInfosId) {
                     if (!_.contains(['s_fln_1', 's_ktn_1'], areaInfosId)) {
                         return;
@@ -243,6 +282,8 @@ config(['$routeProvider',
                             areaInfos["total"].sizeByType[k].size += parseFloat(v.size);
                         }
                     })
+                    areaInfos["total"].dataMap["population"] += parseInt(aAreaInfo.dataMap["population"]);
+
                 })
             };
 
@@ -263,10 +304,16 @@ config(['$routeProvider',
                     if(sizeKey.match(/area_.+/)){
                         areaInfos[areaId].sizeByType[sizeKey] = {
                             key: aRow.gsx$typelabeltc.$t,
-                            size: aRow.gsx$areasize.$t
+                            size: aRow.gsx$areasize.$t //TODO rename as value
                         };
-
                     }
+                    else if(sizeKey!==''){
+                        areaInfos[areaId].dataMap[sizeKey] = aRow.gsx$areasize.$t ;
+                    }
+                    // if(sizeKey===''){
+                       
+                    // }
+
                     console.log(areaId);
                     console.log(areaInfos[areaId].sizeByType);
 
