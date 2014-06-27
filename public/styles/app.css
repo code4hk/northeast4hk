@@ -20,8 +20,7 @@
 .code4hk-badge a{
 float: left;
 margin-right: 1rem;
-margin-top: 1rem;
-}
+margin-top: 1rem;}
 
 .area-info{
   position: absolute;
@@ -40,3 +39,7 @@ color:white;
 border-radius: 5px;
 margin-left:1rem;
 }
+/*
+div.leaflet-overlay-pane > img:nth-child(2){
+  -webkit-transform: translate3d(217px, 264px, 0px) rotate(-6deg) !important;
+}*/

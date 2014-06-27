@@ -3,7 +3,8 @@
   <div class="area-info">{{areaSelected.name}}</div>
    <leaflet  id="map" defaults="defaults" center="defaultCenter" layers="layers" geojson="displayedGeoJSON"  markers="displayedMarkers"> </leaflet>
   </div>
-  <div ng-controller="MapInfoAccordionCtrl" class="info-container col-xs-12 col-md-6">
+  <div cg-busy="loadingInfoPromise" class="info-container col-xs-12 col-md-6">
+  <div   ng-controller="MapInfoAccordionCtrl" >
   <accordion close-others="oneAtATime">
 <!--     <accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
       This content is straight in the template.
@@ -20,7 +21,7 @@
       <nvd3-pie-chart 
           data="chartByAreaData"
           id="exampleId"
-          width="550"
+          width="650"
           height="350"
           x="xFunction()"
           y="yFunction()"
@@ -34,28 +35,34 @@
       </nvd3-pie-chart>
           
         </div>
-      <span>規劃人口：{{areaSelected.dataMap["population"]}}</span>
+      <span>規劃人口：{{areaSelected.dataMap["population"].size}}</span>
     </div>
     </accordion-group>
     <accordion-group is-open="status.isPPChartOpen">
         <accordion-heading>
            公私營房屋分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
-        <div>根據規劃圖<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">文件</a>及<a href="http://www.info.gov.hk/gia/general/201402/19/P201402190311.htm" target="_blank">規劃署於立法會書面回覆</a>最新數字</div>
+        無每區數字，用古洞北及粉 嶺北兩區數字計算
+        <div>根據政府規劃大鋼<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">文件</a>及<a href="http://www.info.gov.hk/gia/general/201402/19/P201402190311.htm" target="_blank">發展局於立法會書面回覆</a>最新數字</div>
         <nvd3-pie-chart 
           data="ppChartBySize"
           id="ppChartByArea"
-          width="550"
-          height="350"
+          width="650"
+          height="400"
           x="xFunction()"
           y="yFunction()"
           showLabels="true"
           showLegend="true"
           tooltips="true"
           labelType="percent"
+                    tooltipcontent="areaChartTooltipFunction()"
           >
           <svg></svg>
       </nvd3-pie-chart>
+<div class="clearfix">
+      古洞北面積計算：住宅(甲、乙、丙類) ＋ 綜合發展區 ＋ 商業╱住宅發展連公共交通交匯處、
+</div>
+
     </accordion-group>
     <accordion-group is-open="status.isNewsOpen">
         <accordion-heading>
@@ -69,5 +76,6 @@
 
   </accordion>
       
+  </div>
   </div>
   </div>

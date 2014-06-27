@@ -9,7 +9,7 @@ angular.module('nt4hk', [
     // 'vr.directives.slider',
     'nvd3ChartDirectives',
     // 'angular-intro',
-    // 'cgBusy'
+    'cgBusy'
 ]).
 config(['$routeProvider',
     function($routeProvider) {
@@ -63,7 +63,6 @@ config(['$routeProvider',
         };
         return _service;
 
-
     }
 ])
 // .controller('ChartCtrl', ['$scope',
@@ -73,6 +72,11 @@ config(['$routeProvider',
 // ])
 .controller('MapCtrl', ['$scope', 'mapDataService', 'spreadSheetDataService', 'leafletData',
     function($scope, mapDataService, spreadSheetDataService, leafletData) {
+
+
+        $scope.loadingInfoPromise = {};
+
+
         $scope.defaultCenter = {
             lat: 22.52,
             lng: 114.111,
@@ -120,8 +124,7 @@ config(['$routeProvider',
             colors: ['#ff0000', '#28c9ff', '#0000ff', '#ecf386'],
             labels: ['National Cycle Route', 'Regional Cycle Route', 'Local Cycle Network', 'Cycleway']
         }
-
-        mapDataService.getShapesGeoJSON().then(function(res) {
+         mapDataService.getShapesGeoJSON().then(function(res) {
             $scope.displayedGeoJSON = {};
             //     style:{},
             //     data:{}
@@ -178,6 +181,13 @@ config(['$routeProvider',
                 }
 
             };
+            $scope.ppChartTooltipFunction = function() {
+                return function(key, x, obj, e, graph) {
+                    return '<h4>' + key + '</h4>' +
+                        '<p>' + x + ' 公頃 ' + obj.point.percent + '%</p>'
+                }
+
+            };
 
                 var HOUSING_TYPES = ["sub_public_mix","sub","private"];
 
@@ -192,16 +202,16 @@ config(['$routeProvider',
                 var housingTotal = 0;
                 _.each(HOUSING_TYPES,function(type) {
                     var key = getKey(type);
-                    housingTotal+=parseFloat(dataMap[key]).toFixed(2);  
+                    housingTotal+=parseFloat(dataMap[key].size);  
                 })
 
                 _.each(HOUSING_TYPES,function(type) {
                     var key = getKey(type);
                     if(dataMap[key]){
                         area.push({
-                            key: key,
-                            y: dataMap[key],
-                            percent : (dataMap[key] / housingTotal * 100)
+                            key: dataMap[key].key,
+                            y: dataMap[key].size,
+                            percent : (dataMap[key].size / housingTotal * 100).toFixed(2)
                         })
                         
                     }
@@ -243,6 +253,16 @@ config(['$routeProvider',
 
                 $scope.ppChartBySize = _getDisplayedPublicPrivateChart("size");
                 $scope.ppChartByUnit = _getDisplayedPublicPrivateChart("unit");
+
+//bad but do it!
+                var ele = angular.element("div.leaflet-overlay-pane > img:nth-child(2)");
+                ele.addClass("hihi");
+                var currentCss = ele.css("-webkit-transform");
+                // ele.css("-webkit-transform",currentCss+" rotate(-6reg) !important")
+                // ele.css("-webkit-transform","matrix(1, 60, 0, 1, 356, 269)")
+                console.log(ele.css("-webkit-transform"));
+                // [cos(-6reg) sin(cos(-6reg)) -sin(cos(-6reg)) cos(cos(-6reg)) 0 0].
+                    // ele.addClass("-webkit-transform:translate3d(217px, 264px, 0px) rotate(-6deg) !important");
             })
             $scope.chartByAreaData = [];
 
@@ -259,7 +279,10 @@ config(['$routeProvider',
                 areaInfos["total"].news = {};
                 areaInfos["total"].sizeByType = {};
                 areaInfos["total"].dataMap = {
-                    population:0
+                    population:{
+                        key:"population",
+                        size:0
+                    }
                 };
                 
 
@@ -282,12 +305,12 @@ config(['$routeProvider',
                             areaInfos["total"].sizeByType[k].size += parseFloat(v.size);
                         }
                     })
-                    areaInfos["total"].dataMap["population"] += parseInt(aAreaInfo.dataMap["population"]);
+                    areaInfos["total"].dataMap["population"].size += parseInt(aAreaInfo.dataMap["population"].size);
 
                 })
             };
 
-            spreadSheetDataService.getAreaByDetails().then(function(data) {
+            var loadSpreadSheetPromise = spreadSheetDataService.getAreaByDetails().then(function(data) {
                 // areaInfos
 
                 // var dataByArea
@@ -301,14 +324,16 @@ config(['$routeProvider',
                         return;
                     }
                     var sizeKey = aRow.gsx$typelabeleng.$t;
-                    if(sizeKey.match(/area_.+/)){
+                    if(sizeKey.match(/^area_.+/)){
                         areaInfos[areaId].sizeByType[sizeKey] = {
                             key: aRow.gsx$typelabeltc.$t,
                             size: aRow.gsx$areasize.$t //TODO rename as value
                         };
                     }
                     else if(sizeKey!==''){
-                        areaInfos[areaId].dataMap[sizeKey] = aRow.gsx$areasize.$t ;
+                        areaInfos[areaId].dataMap[sizeKey]={};
+                        areaInfos[areaId].dataMap[sizeKey].key = aRow.gsx$typelabeltc.$t ;                        
+                        areaInfos[areaId].dataMap[sizeKey].size = aRow.gsx$areasize.$t ;
                     }
                     // if(sizeKey===''){
                        
@@ -319,6 +344,7 @@ config(['$routeProvider',
 
 
                 });
+
 
                 //calculating total
                 _generateAreaTotal();
@@ -333,6 +359,8 @@ config(['$routeProvider',
             }).fail(function(err) {
                 console.log(err);
             });
+
+       $scope.loadingInfoPromise =loadSpreadSheetPromise;
             $scope.displayedGeoJSON.style = function(feature) {
                 return {
                     fillColor: getColor(feature.properties.id),
@@ -347,6 +375,8 @@ config(['$routeProvider',
 
             $scope.displayedGeoJSON.data = res.data;
         });
+
+
 
         $scope.maxBounds = {};
         $scope.layers = {
@@ -367,10 +397,10 @@ config(['$routeProvider',
                 s_ktn_1_left: {
                     name: "古洞北",
                     type: 'imageOverlay',
-                    url: '/data/nent_nda_left.png',
+                    url: '/data/nent_nda_left_onepiece_A_left.png',
                     bounds: [
-                        [22.4945, 114.085],
-                        [22.525, 114.103]
+                        [22.497, 114.082],
+                        [22.525, 114.126]
                     ],
                     visible: true,
                     layerOptions: {
@@ -382,10 +412,10 @@ config(['$routeProvider',
                 s_ktn_1_right: {
                     name: '古洞北及粉嶺北',
                     type: 'imageOverlay',
-                    url: '/data/nent_nda_right.png',
+                    url: '/data/nent_nda_left_onepiece_A_right.png',
                     bounds: [
-                        [22.491, 114.103],
-                        [22.530, 114.160]
+                        [22.491, 114.113],
+                        [22.525, 114.155]
                     ],
                     visible: true,
                     layerOptions: {
