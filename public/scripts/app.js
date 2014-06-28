@@ -59,13 +59,18 @@ config(['$routeProvider',
 
                 var slidesSource = [{
                         image: 'http://www.pland.gov.hk/pland_en/press/publication/ar_09/images/common/events_16_l.jpg',
-                        text: '<h3>新界東北發展計劃背景資料</h3><br />港英政府於1990年代已開始研究發展新界東北成爲新市鎮。1998年，項目被納入香港政府的全港發展策略檢討，惟後來經歷香港經濟衰退，計劃一度被擱置。2007年，香港政府發表《香港2030》，建議開拓古洞北、粉嶺北及坪輋／打鼓嶺新發展區和洪水橋新發展區。 香港行政長官曾蔭權於同年《施政報告》中表示，恢復對這些地區進行新市鎮的規劃及工程研究。',
+                        text: '<h4>新界東北發展計劃背景資料</h4><br />港英政府於1990年代已開始研究發展新界東北成爲新市鎮。1998年，項目被納入香港政府的全港發展策略檢討，惟後來經歷香港經濟衰退，計劃一度被擱置。2007年，香港政府發表《香港2030》，建議開拓古洞北、粉嶺北及坪輋／打鼓嶺新發展區和洪水橋新發展區。 香港行政長官曾蔭權於同年《施政報告》中表示，恢復對這些地區進行新市鎮的規劃及工程研究。',
                         sources: [{
                             ref:'維基百科新界東北發展計劃條目',
                             url:'https://zh.wikipedia.org/wiki/新界東北發展計劃'}]
                     }, {
                         image: 'http://www.nentnda.gov.hk/img/home.jpg',
-                        text: '計劃中政府展開三階段公眾參與：<ul><li>2008年11月－2009年3月：第一階段公眾參與</li><li>2009年11月－2010年3月為（第二階段公眾參與）</li><li>2012年6月－2012年9月為第三階段公眾參與 <a href="http://www.nentnda.gov.hk/chi/public_3.html#PER" taget="_blank">報告</a></li></ul>'
+                        text: '計劃中政府展開三階段公眾參與：<ul><li>2008年11月－2009年3月：第一階段公眾參與</li><li>2009年11月－2010年3月：第二階段公眾參與</li><li>2012年6月－2012年9月為第：階段公眾參與 <a href="http://www.nentnda.gov.hk/chi/public_3.html#PER" taget="_blank">報告</a></li></ul>',
+                        sources:[
+                        {
+                            ref:'官方活動時間表',
+                            url:'http://www.nentnda.gov.hk/chi/timetable.html'
+                        }]
                     }, {
                         image: 'http://static.apple.nextmedia.com/images/apple-photos/apple/20120923/large/23la1p101.jpg',
                         text: '2012年8月18日， 政府於粉嶺祥華社區會堂舉行居民大會，不過場地只能夠容納320人。場面混亂，整個諮詢會舉行了不足30分鐘就告吹。延至2012年9月22日，香港政府於上水寶運路草地舉行最後一次公眾論壇，有約6,000人登記入場。發展局局長陳茂波於會上多次被質疑為何香港「無地建屋」，回應時首次披露，香港政府現時持有的4,000多公頃土地（約9個天水圍面積）之說實屬誤解，事實上只有2,100多公頃為住宅用地，當中6成，即1,200公頃需要預留予原居民興建丁屋；撥歸一般市民的公私營住宅地只有480公頃。陳茂波說，會確保新市鎮是香港人的新市鎮，包括興建公共屋邨和居屋，私營房屋都是中小型單位，以及引入港人港地條款等。諮詢會結束後，陳茂波等官員在數十名警務人員的護送下，擾攘了10多分鐘才能夠乘車離開現場；其間有人向他掟水樽，更幾乎擊中陳，有人更向官員掟示威物品及撒陰司紙。',
@@ -77,7 +82,7 @@ config(['$routeProvider',
                             ref:'圖片：蘋果'}]
                     }, {
                         image: 'http://orientaldaily.on.cc/cnt/news/20120924/photo/0924-00176-025b1.jpg?t=1403949195579',
-                        text: '2012年，林鄭月娥（時任發展局局長）在立法會回答議員時提及，會採取這傳統新市鎮發展模式，用公帑收回所需土地以免除公眾對官商勾結利益輸送的憂慮。2013年陳茂波推出「傳統新市鎮發展模式加強版」容許業主補地價後自行興建樓宇出售，毋須先交回土地予政府，然後再公開競投。',
+                        text: '2012年，林鄭月娥（時任發展局局長）在立法會回答議員時提及，會採取這傳統新市鎮發展模式，用公帑收回所需土地以免除公眾對官商勾結利益輸送的憂慮。2013年陳茂波推出「傳統新市鎮發展模式加強版」容許業主補地價後自行興建樓宇出售，毋須先交回土地予政府再公開競投。',
                         sources: [{
                             ref: '發展局局長與傳媒談話內容',
                             url: 'http://www.devb.gov.hk/tc/sdev/press/index_id_7364.html'
@@ -110,6 +115,10 @@ config(['$routeProvider',
                              sources: [ {
                                 ref: '主場新聞圖片及報導：東北前期撥款通過 泛民圍主席台吳亮星強行表決',
                                 url: 'http://thehousenews.com/NT-northeast/%E6%9D%B1%E5%8C%97%E5%89%8D%E6%9C%9F%E6%92%A5%E6%AC%BE%E9%80%9A%E9%81%8E-%E6%B3%9B%E6%B0%91%E5%9C%8D%E4%B8%BB%E5%B8%AD%E5%8F%B0%E5%90%B3%E4%BA%AE%E6%98%9F%E5%BC%B7%E8%A1%8C%E8%A1%A8%E6%B1%BA/'
+                            },{
+                                ref:'財務委員會通過新界東北前期撥款前後影片',
+                                url:'https://www.youtube.com/watch?v=BKOmjirCPls'
+
                             }]
                         }];
 
@@ -179,6 +188,7 @@ config(['$routeProvider',
                         templateUrl: 'templates/modal-content.html',
                         controller: 'ModalInstanceCtrl',
                         size: size,
+                        windowClass:'background-modal',
                         resolve: {
                             items: function() {
                                 return $scope.items;
@@ -195,13 +205,41 @@ config(['$routeProvider',
                      })
                 };
 
+                 $scope.openVideoModal = function(size) {
+
+                    var modalInstance = $modal.open({
+                        templateUrl: 'templates/modal-video.html',
+                        size: size,
+                        resolve: {
+                            items: function() {
+                                return $scope.items;
+                                $location.search('background')
+                            }
+                        }
+                    });
+                    modalInstance.result.then(function(selectedItem) {
+                        // $location.search('background',false)
+                    }, function() {});
+
+                     modalInstance.result.finally(function() {
+                        $location.search('video',null);
+                     })
+                };
+
+
 
                 $scope.loadingInfoPromise = {};
                 $scope.$on('$locationChangeSuccess',function() {
                     var isBasic = $location.search().background ?true:false;
+                    var isVideo = $location.search().video ?true:false;
+
                     if(isBasic){
                         $scope.openModal();
+                    }else if(isVideo){
+                        $scope.openVideoModal();
                     }
+
+
                 })
                 $scope.openModal();                
                 $scope.selectArea =function(areaId) {
@@ -456,11 +494,9 @@ config(['$routeProvider',
                                 sourceTags += '<li>'+'<a target="_blank" href="'+ source.sourceLink+'">'+source.sourceName+"</a>"
                             })
                             sourceTags+='<ul>';
-
-
-                return  $interpolate(markerMessageTemplate)({
-                    label: label
-                }) + sourceTags;
+                            return  $interpolate(markerMessageTemplate)({
+                                label: label
+                            }) + sourceTags;
                         }
 
                         var uniqueMakers = {};
@@ -486,6 +522,7 @@ config(['$routeProvider',
                         var marker = {
                             lat: parseFloat(lat),
                             lng: parseFloat(lng),
+                            label:label,
                             key:key,
                             sources:[displaySource]
                         }

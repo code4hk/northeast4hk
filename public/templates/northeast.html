@@ -48,7 +48,7 @@
            公私營房屋分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
        
-        <div>根據政府城市規劃委員會20/12/2013刊憲<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">規劃大鋼</a>及<a href="http://www.info.gov.hk/gia/general/201402/19/P201402190311.htm" target="_blank">發展局於立法會書面回覆</a>最新數字</div>
+        <div>根據政府城市規劃委員會2013-12-20刊憲<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">規劃大鋼</a>及<a href="http://www.info.gov.hk/gia/general/201402/19/P201402190311.htm" target="_blank">發展局於立法會書面回覆梁國雄議員</a>最新數字</div>
         <div>無每區數字資料，此為古洞北及粉嶺北兩區數字</div>
         <nvd3-pie-chart 
           data="ppChartBySize"
@@ -102,3 +102,16 @@
     </div>
 
     </script>
+        <script type="text/ng-template" id="templates/modal-video.html">
+        <div class="modal-header">
+            <h3 class="modal-title">影片《新界東北發展發生咩事》</h3>
+        </div>
+        <div class="modal-body video-container">
+           <iframe   src="//www.youtube.com/embed/KWb764kankk" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+

@@ -25,7 +25,7 @@ margin-top: 1rem;}
 .area-info{
   position: absolute;
 font-size: 4rem;
-z-index: 9999;
+z-index: 999;
 margin-top: 1rem;
 margin-bottom:1rem;
 padding-left:1rem;
@@ -41,7 +41,7 @@ margin-left:1rem;
 }
 
 .slide img{
-  max-height:40rem;
+  max-height:35rem;
   max-width:60rem;
    vertical-align: middle;
 }
@@ -72,6 +72,17 @@ border-radius: 0;
 }
 .modal-footer{
   background:white;
+}
+
+.video-content iframe{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+}
 }
 /*
 div.leaflet-overlay-pane > img:nth-child(2){
