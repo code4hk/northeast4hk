@@ -477,7 +477,7 @@ config(['$routeProvider',
 
                     var loadPoiPromise = spreadSheetDataService.getPointOfInterest().then(function(data) {
 
-            var markerMessageTemplate = '<h6><b>{{label}}</b><span class="pull-right">{{date}}</span></h6>相關資料：';
+            var markerMessageTemplate = '<h6><b>{{label}}</b><span class="pull-right">{{date}}</span></h6><div>{{details}}</div>相關資料：';
 
 
 //ng-repeat won't work in $interpolate, DIY
@@ -487,7 +487,7 @@ config(['$routeProvider',
             // +'<ul><li ng-repeat="source in sources"><a ng-href="{{sourceLink}}">{{sourceName}}</a></li></ul>';
 
 
-                        function _getMakerMessage(label,sources){
+                        function _getMakerMessage(label,details,sources){
 
                             var sourceTags  = '<ul>';
                             _.each(sources,function(source) {
@@ -495,7 +495,8 @@ config(['$routeProvider',
                             })
                             sourceTags+='<ul>';
                             return  $interpolate(markerMessageTemplate)({
-                                label: label
+                                label: label,
+                                details:details,
                             }) + sourceTags;
                         }
 
@@ -510,6 +511,7 @@ config(['$routeProvider',
                         }
                         var sourceName = aRow.gsx$source.$t;
                         var sourceLink = aRow.gsx$sourcelink.$t;
+                        var details = aRow.gsx$eventfulldetails.$t;
                         var locationKey = lat+"_"+lng;
                         var displaySource = {
                             sourceName:sourceName,
@@ -523,6 +525,7 @@ config(['$routeProvider',
                             lat: parseFloat(lat),
                             lng: parseFloat(lng),
                             label:label,
+                            details:details,
                             key:key,
                             sources:[displaySource]
                         }
@@ -535,7 +538,7 @@ config(['$routeProvider',
 
                       var additionalMarkers = {};
                       _.each(uniqueMakers,function(v,k) {
-                            v.message = _getMakerMessage(v.label,v.sources);
+                            v.message = _getMakerMessage(v.label,v.details,v.sources);
                             additionalMarkers[v.key]=v;
                       })
 
