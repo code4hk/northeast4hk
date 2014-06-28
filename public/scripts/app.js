@@ -16,7 +16,8 @@ config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.when('/map', {
             templateUrl: 'templates/northeast.html',
-            controller: 'MapCtrl'
+            controller: 'MapCtrl',
+            reloadOnSearch:false
         });
         $routeProvider.otherwise({
             redirectTo: '/map'
@@ -129,28 +130,8 @@ config(['$routeProvider',
                     console.log($scope.slides);
 
                 }
+
             ])
-        .controller('ModalCtrl', ['$scope', '$modal',
-            function($scope, $modal) {
-                $scope.open = function(size) {
-
-                    var modalInstance = $modal.open({
-                        templateUrl: 'templates/modal-content.html',
-                        controller: 'ModalInstanceCtrl',
-                        size: size,
-                        resolve: {
-                            items: function() {
-                                return $scope.items;
-                            }
-                        }
-                    });
-
-                    modalInstance.result.then(function(selectedItem) {
-                        $scope.selected = selectedItem;
-                    }, function() {});
-                };
-            }
-        ])
         .factory('q', function() {
             return Q;
         })
@@ -186,11 +167,41 @@ config(['$routeProvider',
 
         //     }
         // ])
-        .controller('MapCtrl', ['$scope', 'mapDataService', 'spreadSheetDataService', 'leafletData',
-            function($scope, mapDataService, spreadSheetDataService, leafletData) {
+        .controller('MapCtrl', ['$scope', 'mapDataService', 'spreadSheetDataService', 'leafletData','$location','$modal',
+            function($scope, mapDataService, spreadSheetDataService, leafletData,$location,$modal) {
+
+
+                $scope.openModal = function(size) {
+
+                    var modalInstance = $modal.open({
+                        templateUrl: 'templates/modal-content.html',
+                        controller: 'ModalInstanceCtrl',
+                        size: size,
+                        resolve: {
+                            items: function() {
+                                return $scope.items;
+                                $location.search('background')
+                            }
+                        }
+                    });
+                    modalInstance.result.then(function(selectedItem) {
+                        // $location.search('background',false)
+                    }, function() {});
+
+                     modalInstance.result.finally(function() {
+                        $location.search('background',null);
+                     })
+                };
+
 
                 $scope.loadingInfoPromise = {};
-
+                $scope.$on('$locationChangeSuccess',function() {
+                    var isBasic = $location.search().background ?true:false;
+                    if(isBasic){
+                        $scope.openModal();
+                    }
+                })
+                $scope.openModal();                
                 $scope.selectArea =function(areaId) {
                     $scope.areaSelectedId = areaId;
                 };
@@ -253,17 +264,29 @@ config(['$routeProvider',
                     var areaInfos = {
                         "fln_golf": {
                             name: "粉嶺哥爾夫球場",
-                            color: "#16B900"
+                            color: "#16B900",
+                            center:{
+                                lat:22.491741758372008,
+                                lng:114.11580562591551
+                            },
 
                         },
                         "s_ktn_1": {
                             name: "古洞北",
                             color: "blue",
+                            center:{
+                                lat:22.508195934393456,
+                                lng:114.10469055175781
+                            },
                             opacity: 0
                         },
                         "s_fln_1": {
                             name: "粉嶺北",
                             color: "#f86767",
+                            center:{
+                                lat: 22.509147441324007, 
+                                lng:114.13310050964355
+                            },
                             opacity: 0
                         },
                         "s_ne_tkl_14": {
@@ -299,7 +322,6 @@ config(['$routeProvider',
                     function areaClickCallback(featureSelected) {
                         console.log(featureSelected.properties.id);
                         $scope.areaSelectedId = featureSelected.properties.id;
-
 
                     }
                     $scope.areaChartTooltipFunction = function() {
@@ -376,6 +398,15 @@ config(['$routeProvider',
                             return;
                         }
                         $scope.areaSelected = areaInfos[$scope.areaSelectedId];
+                        if($scope.areaSelected.center){
+                            $scope.defaultCenter = angular.copy($scope.areaSelected.center);
+                            if(newVal ==="total"){
+                                $scope.defaultCenter.zoom=15;
+                            }else{
+                                $scope.defaultCenter.zoom=13;
+                            }
+                        }
+
                         $scope.chartByAreaData = _getDisplayedAreaChart();
 
 
@@ -391,7 +422,11 @@ config(['$routeProvider',
                     });
 
                     areaInfos["total"] = {
-                        name: "古洞北及粉嶺北"
+                        name: "古洞北及粉嶺北",
+                        center:{
+                                lat: 22.51065398057207, 
+                                lng:114.11971092224121
+                        },
                     };
 
                     areaInfos["total"].news = {};
