@@ -92,6 +92,10 @@
       </div>
       <div class="modal-footer">
         <div class="slide-description" ng-bind-html="slides[activeIndex].text"></div>
+        <span ng-show="slides[activeIndex].sources.length>0">參考資料：</span>
+        <ul style="list-style-type:none;">
+        <li ng-repeat="source in slides[activeIndex].sources"><a ng-href="{{source.url}}" target="_blank"> {{source.ref}}</a></li>
+        </ul>
             <button class="btn btn-warning" ng-click="$dismiss()">地圖詳細資料</button>
             <button ng-show="activeIndex>0" class="btn btn-info" ng-click="prev()">上一頁</button>
             <button class="btn btn-primary" ng-show="activeIndex<slides.length-1" ng-click="next()">繼續</button>
