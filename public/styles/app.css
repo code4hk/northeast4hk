@@ -41,13 +41,13 @@ margin-left:1rem;
 }
 
 .slide img{
-  max-height:45rem;
+  max-height:40rem;
   max-width:60rem;
    vertical-align: middle;
 }
 .slide{
    /*line-height:10rem;*/
-  min-height:45rem;
+  min-height:30rem;
   text-align:center;
   background:transparent;
 }

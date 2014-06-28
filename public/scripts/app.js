@@ -138,12 +138,21 @@ config(['$routeProvider',
         .service('spreadSheetDataService', ['$http', 'q',
             function($http, Q) {
                 var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/746094374/public/values?alt=json';
+                var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/1670720169/public/values?alt=json';
 
                 var _service = {};
-                _service.getAreaByDetails = function() {
-                    return Q($http.get(URL)).then(function(res) {
+
+                _service.getSpreadSheet= function(url) {
+                    return Q($http.get(url)).then(function(res) {
                         return res.data.feed.entry;
                     });
+                };
+                _service.getAreaByDetails = function() {
+                    return _service.getSpreadSheet(URL);
+                };
+
+                _service.getPointOfInterest = function() {
+                        return _service.getSpreadSheet(POI_URL);
                 };
                 return _service;
 
@@ -167,8 +176,8 @@ config(['$routeProvider',
 
         //     }
         // ])
-        .controller('MapCtrl', ['$scope', 'mapDataService', 'spreadSheetDataService', 'leafletData','$location','$modal',
-            function($scope, mapDataService, spreadSheetDataService, leafletData,$location,$modal) {
+        .controller('MapCtrl', ['$scope', 'mapDataService', 'spreadSheetDataService', 'leafletData','$location','$modal','$interpolate',
+            function($scope, mapDataService, spreadSheetDataService, leafletData,$location,$modal,$interpolate) {
 
 
                 $scope.openModal = function(size) {
@@ -210,38 +219,8 @@ config(['$routeProvider',
                     lng: 114.111,
                     zoom: 13
                 };
-
-
                 $scope.displayedMarkers = {};
 
-                $scope.displayedMarkers["a"] = _getMarker();
-
-
-                function _getMarker() {
-                    // return {
-                    //            lat: event.lat !== "" ? parseFloat(event.lat) : 0,
-                    //            lng: event.lng !== "" ? parseFloat(event.lng) : 0,
-                    //            // layer: event.contract,
-                    //            group:event.contract,
-                    //            message: _getMessage(event),
-                    //            focus: false,
-                    //            draggable: false,
-                    //            // fa-road,legal,gear
-                    //            icon: {
-                    //                type: 'awesomeMarker',
-                    //                icon: 'road',
-                    //                prefix: 'fa',
-                    //                markerColor: event.isDelay ? 'red' : 'darkblue'
-                    //            }
-                    //        };
-
-                    return {
-                        lat: 22.49,
-                        lng: 114.101,
-                        // message: 'hi',
-                        focus: true
-                    }
-                }
 
                 $scope.defaults = {
                     // crs: 'Simple',
@@ -401,9 +380,9 @@ config(['$routeProvider',
                         if($scope.areaSelected.center){
                             $scope.defaultCenter = angular.copy($scope.areaSelected.center);
                             if(newVal ==="total"){
-                                $scope.defaultCenter.zoom=15;
-                            }else{
                                 $scope.defaultCenter.zoom=13;
+                            }else{
+                                $scope.defaultCenter.zoom=15;
                             }
                         }
 
@@ -462,6 +441,79 @@ config(['$routeProvider',
 
                         })
                     };
+// https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/1670720169/public/values?alt=json
+
+
+                    var loadPoiPromise = spreadSheetDataService.getPointOfInterest().then(function(data) {
+
+            var markerMessageTemplate = '<h6><b>{{label}}</b><span class="pull-right">{{date}}</span></h6>相關資料：';
+
+
+//ng-repeat won't work in $interpolate, DIY
+
+
+
+            // +'<ul><li ng-repeat="source in sources"><a ng-href="{{sourceLink}}">{{sourceName}}</a></li></ul>';
+
+
+                        function _getMakerMessage(label,sources){
+
+                            var sourceTags  = '<ul>';
+                            _.each(sources,function(source) {
+                                sourceTags += '<li>'+'<a target="_blank" href="'+ source.sourceLink+'">'+source.sourceName+"</a>"
+                            })
+                            sourceTags+='<ul>';
+
+
+                return  $interpolate(markerMessageTemplate)({
+                    label: label
+                }) + sourceTags;
+                        }
+
+                        var uniqueMakers = {};
+                      _.each(data, function(aRow) {
+                        var lat = aRow.gsx$lat.$t;
+                        var lng = aRow.gsx$lng.$t;
+                        var label = aRow.gsx$event.$t;
+                        var key = aRow.gsx$sourceid.$t;
+                        if(lat==="" ||lng===""){
+                            return;
+                        }
+                        var sourceName = aRow.gsx$source.$t;
+                        var sourceLink = aRow.gsx$sourcelink.$t;
+                        var locationKey = lat+"_"+lng;
+                        var displaySource = {
+                            sourceName:sourceName,
+                            sourceLink:sourceLink
+                        };
+                        if(uniqueMakers[locationKey]){
+                            uniqueMakers[locationKey].sources.push(displaySource); 
+                        }
+                        else{
+                        var marker = {
+                            lat: parseFloat(lat),
+                            lng: parseFloat(lng),
+                            key:key,
+                            sources:[displaySource]
+                        }
+                        uniqueMakers[locationKey]= marker;
+                        }
+                        console.log(marker);
+
+                      });
+
+
+                      var additionalMarkers = {};
+                      _.each(uniqueMakers,function(v,k) {
+                            v.message = _getMakerMessage(v.label,v.sources);
+                            additionalMarkers[v.key]=v;
+                      })
+
+                    //can't use float as JSON key
+                    angular.extend($scope.displayedMarkers,additionalMarkers);
+
+
+                    })
 
                     var loadSpreadSheetPromise = spreadSheetDataService.getAreaByDetails().then(function(data) {
                         // areaInfos
@@ -548,7 +600,7 @@ config(['$routeProvider',
                     },
                     overlays: {
                         s_ktn_1_left: {
-                            name: "古洞北",
+                            name: "古洞北規劃圖",
                             type: 'imageOverlay',
                             url: '/data/nent_nda_left_onepiece_A_left.png',
                             bounds: [
@@ -563,7 +615,7 @@ config(['$routeProvider',
                             }
                         },
                         s_ktn_1_right: {
-                            name: '古洞北及粉嶺北',
+                            name: '粉嶺北規劃圖',
                             type: 'imageOverlay',
                             url: '/data/nent_nda_left_onepiece_A_right_rotated.png',
                             bounds: [
