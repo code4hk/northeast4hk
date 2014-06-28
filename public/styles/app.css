@@ -39,6 +39,40 @@ color:white;
 border-radius: 5px;
 margin-left:1rem;
 }
+
+.slide img{
+  max-height:45rem;
+  max-width:60rem;
+   vertical-align: middle;
+}
+.slide{
+   /*line-height:10rem;*/
+  min-height:45rem;
+  text-align:center;
+  background:transparent;
+}
+.slide-description{
+  text-align:left;
+  line-height: 2.5rem;
+  min-height:10rem;
+}
+
+.slide:before {    /* create a full-height inline block pseudo=element */
+    content: ' ';
+    display: inline-block;
+    vertical-align: middle;  /* vertical alignment of the inline element */
+    height: 100%;
+}
+
+.modal-content{
+  background:transparent;
+  box-shadow: none;
+  border: 0;
+border-radius: 0;
+}
+.modal-footer{
+  background:white;
+}
 /*
 div.leaflet-overlay-pane > img:nth-child(2){
   -webkit-transform: translate3d(217px, 264px, 0px) rotate(-6deg) !important;

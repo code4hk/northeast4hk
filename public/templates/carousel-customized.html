@@ -1,0 +1,51 @@
+    <script type="text/ng-template" id="template/carousel/carousel.html">
+<div ng-mouseenter="pause()" ng-mouseleave="play()" class="carousel" ng-swipe-right="prev()" ng-swipe-left="next()">
+    <ol class="carousel-indicators" ng-show="slides.length > 1">
+        <li ng-repeat="slide in slides track by $index" ng-class="{active: isActive(slide)}" ng-click="select(slide)"></li>
+    </ol>
+    <div class="carousel-inner" ng-transclude></div>
+</div>
+</script>
+<script type="text/ng-template" id="template/carousel/slide.html">
+<div ng-class="{
+    'active': leaving || (active && !entering)}" class="item text-center">
+  <div ng-class="{
+    'prev': (next || active) && direction=='prev',
+    'next': (next || active) && direction=='next',
+    'right': direction=='prev',
+    'left': direction=='next'
+  }" style="position:relative">
+  <div class="cleafix">
+      <a class="left carousel-control" ng-click="prev()" ng-show="$index >0"><span class="glyphicon glyphicon-chevron-left"></span></a>
+    <a class="right carousel-control" ng-click="next()" ><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+<div ng-transclude></div>
+  </div>
+   <div class="modal-footer">
+    <span class="slide-description" ng-bind-html="slide.text"></span>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="ok()">Next</button>
+    </div>
+</div>
+</script>
+
+
+    <script type="text/ng-template" id="template/carousel/carousel.html">
+<div ng-mouseenter="pause()" ng-mouseleave="play()" class="carousel" ng-swipe-right="prev()" ng-swipe-left="next()">
+    <div style="position:relative">
+    <ol class="carousel-indicators" ng-show="slides.length > 1">
+        <li ng-repeat="slide in slides track by $index" ng-class="{active: isActive(slide)}" ng-click="select(slide)"></li>
+    </ol>
+    <div class="carousel-inner" ng-transclude></div>
+    <a class="left carousel-control" ng-click="prev()" ng-show="slides.length > 1"><span class="glyphicon glyphicon-chevron-left"></span></a>
+    <a class="right carousel-control" ng-click="next()" ng-show="slides.length > 1"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div>
+           <div class="modal-footer">
+        <span class="slide-description" ng-bind-html="slide.text"></span>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="next()">Next</button>
+    </div>
+</div>
+</script>
+
+
