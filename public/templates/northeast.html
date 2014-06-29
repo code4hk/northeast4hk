@@ -22,7 +22,7 @@
     <accordion-group id="landuse" is-open="status.isFirstOpen">
     <div ng-if="status.isFirstOpen">
      <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
-            <button class="btn btn-info" ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
+            <button ng-show="false" class="btn btn-info" ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
           <accordion-heading>
             土地用途分佈 - {{areaSelected.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
