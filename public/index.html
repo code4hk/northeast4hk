@@ -6,16 +6,18 @@
         <title>新界東北地圖</title>
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+                  <!-- build:css styles/lib.css -->
 <link rel="stylesheet" type="text/css" href="lib/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">   
     <link rel="stylesheet" href="lib/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="lib/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-
-
 <link rel="stylesheet" type="text/css" href="lib/angular-busy/dist/angular-busy.min.css">
 <link rel="stylesheet" type="text/css" href="lib/intro.js/minified/introjs.min.css">
-<link rel="stylesheet" type="text/css" href="styles/app.css">
     <link rel="stylesheet" href="lib/leaflet-dist/leaflet.css" />
       <link rel="stylesheet" href="styles/nvd3-modified.css"/>
+      <!-- endbuild -->
+       <!-- build:css styles/app.css -->
+<link rel="stylesheet" type="text/css" href="styles/app.css">
+<!-- endbuild -->
 
         <!--[if lt IE 9]>
           <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -60,42 +62,36 @@
 </header>
       <ng-view class="view-animate"></ng-view>
       <div class="row" style="background:white;color:black;text-align:center; "><span class="pull-right"> 嗚謝<a target="_blank" href="http://www.udomain.com.hk/">UDomain</a>贊助伺服器</span><span class="pull-right ">&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="pull-right"> 若資料錯漏請指正  code4hk@gmail.com  </span> </div>
+
         <script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <!-- build:js scripts/lib.js -->
         <script type='text/javascript' src="lib/underscore/underscore.js"></script>
         <script src="lib/angular/angular.js"></script>
         <script src="lib/angular-route/angular-route.js"></script>
         <script src="lib/angular-mocks/angular-mocks.js"></script>
         <script src="lib/angular-animate/angular-animate.js"></script>
         <script type="text/javascript" src="lib/momentjs/moment.js"></script>
-        <script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <script type='text/javascript' src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
-
         <script type='text/javascript' src="lib/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
 <script type='text/javascript' src="lib/d3/d3.js"></script>
 <script type='text/javascript' src="lib/nvd3/nv.d3.js"></script>
 <!-- modified -->
         <script type='text/javascript' src="lib/intro.js/intro.js"></script>
-
                 <script type='text/javascript' src="lib/angular-busy/dist/angular-busy.js"></script>
         <script type='text/javascript' src="lib/angular-intro.js/build/angular-intro.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular-touch.min.js"></script>
-<script src="lib/venturocket-angular-slider/build/angular-slider.min.js"></script>
-
-
+        <script type='text/javascript' src="lib/angular-touch/angular-touch.min.js"></script>
     <script src="lib/leaflet-dist/leaflet.js"></script>
     <script src="lib/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
         <script type="text/javascript" src="lib/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
                 <script type="text/javascript" src="lib/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
-        
-        
             <script src="lib/q/q.js"></script>
-        
-
 <script src="lib/i18next/i18next.js"></script>
 <script src="lib/ng-i18next/dist/ng-i18next.min.js"></script>
-
+<!-- endbuild -->
+        <script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script type='text/javascript' src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
+          <!-- build:js scripts/app.js -->
         <script type='text/javascript' src="scripts/app.js"></script>
-
+<!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <script>

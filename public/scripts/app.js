@@ -24,7 +24,7 @@ config(['$routeProvider',
         });
     }
 ])
-    .directive('navByKeys', function($document) {
+    .directive('navByKeys', ['$document',function($document) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
@@ -53,7 +53,7 @@ config(['$routeProvider',
                 // });
             }
         };
-    })
+    }])
     .controller('MapInfoAccordionCtrl', ['$scope',
         function($scope) {
             $scope.oneAtATime = true;
@@ -281,12 +281,11 @@ $scope.onAfterChange = function(targetElement) {
     }
 };
 
-        $scope.openModal = function(size) {
+        $scope.openModal = function() {
 
             var modalInstance = $modal.open({
                 templateUrl: 'templates/modal-content.html',
                 controller: 'ModalInstanceCtrl',
-                size: size,
                 windowClass: 'background-modal',
                 resolve: {
                     items: function() {
@@ -305,11 +304,10 @@ $scope.onAfterChange = function(targetElement) {
             })
         };
 
-        $scope.openVideoModal = function(size) {
+        $scope.openVideoModal = function() {
 
             var modalInstance = $modal.open({
                 templateUrl: 'templates/modal-video.html',
-                size: size,
                 resolve: {
                     items: function() {
                         return $scope.items;

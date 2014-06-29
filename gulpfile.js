@@ -8,6 +8,9 @@ var livereload = require('gulp-livereload');
 var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var bower = require('gulp-bower');
+var usemin = require('gulp-usemin');
+
+var minifyCss = require('gulp-minify-css');
 
 server = lr();
 
@@ -20,6 +23,29 @@ gulp.task('bower', function() {
 
 });
 
+var filesToMove = [
+        publicFolder+'data/**/*.*',
+        publicFolder+'images/**/*.*',
+        publicFolder+'templates/**/*.*'
+    ];
+
+gulp.task('usemin', function(){
+  gulp.src(publicFolder+'index.html')
+    .pipe(usemin({
+         css: [minifyCss(), 'concat'],
+      js: [uglify()]
+      // in this case css will be only concatenated (like css: ['concat']).
+    }))
+    .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('copy',function() {
+    gulp.src(filesToMove, { base: publicFolder })
+  .pipe(gulp.dest('dist'));
+
+})
+
+gulp.task('build',['bower','usemin','copy']);
 //Step:
 // merge-geojson-features
 

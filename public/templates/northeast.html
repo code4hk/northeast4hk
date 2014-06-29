@@ -21,22 +21,21 @@
     </accordion-group> -->
     <accordion-group id="landuse" is-open="status.isFirstOpen">
     <div ng-if="status.isFirstOpen">
-     <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
-            <button ng-show="false" class="btn btn-info" ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
           <accordion-heading>
             土地用途分佈 - {{areaSelected.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
         <!-- <div ng-if="!areaSelected.name">選擇地區</div> -->
         <!-- ng-if="areaSelected.name" -->
+        <span ng-if="areaSelectedId!== 's_ne_tkl_14'"><h5>總面積：{{areaSelected.sizeByType.area_total.size}} 公頃</h5></span>
+        <div ng-if="(areaSelectedId!== 'fln_golf' && areaSelectedId!== 's_ne_tkl_14')">
                 <div>根據政府城市規劃委員會2013-12-20刊憲規劃大綱草圖<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">古洞北</a>、<a href="http://www.ozp.tpb.gov.hk/pdf/S_FLN_1_c.pdf">粉嶺北</a><br/>
                   及<a target="_blank" href="http://www.districtcouncils.gov.hk/north/doc/tc/dc_meetings_doc/n_2013_073_ch.pdf"> 北區區議會2013-12-12日討論文件土地用途摘要數字</a></div>
+     <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
+            <button ng-show="false" class="btn btn-info" ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
         <div ng-show="isShowAreaChart">
-        <h5>總面積：{{areaSelected.sizeByType.area_total.size}} 公頃</h5>
-        <div ng-if="areaSelectedId!== 'fln_golf'">
       <nvd3-pie-chart 
           data="chartByAreaData"
           id="exampleId"
-          width="650"
           height="350"
           margin="{left:0,top:0,bottom:0,right:0}"
           x="xFunction()"
@@ -60,7 +59,7 @@
     </accordion-group>
     <accordion-group id="housing" is-open="status.isPPChartOpen">
         <accordion-heading>
-           公私營房屋分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+           公私營房屋分佈 - 古洞北及粉嶺北<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
            <div ng-if="status.isPPChartOpen">
         <div>根據政府城市規劃委員會2013-12-20刊憲<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">規劃大鋼</a>及<a href="http://www.info.gov.hk/gia/general/201402/19/P201402190311.htm" target="_blank">發展局於立法會書面回覆梁國雄議員</a>最新數字</div>
@@ -68,7 +67,6 @@
         <nvd3-pie-chart 
           data="ppChartBySize"
           id="ppChartByArea"
-          width="650"
           height="350"
           x="xFunction()"
           y="yFunction()"
