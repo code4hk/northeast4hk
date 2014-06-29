@@ -303,8 +303,8 @@ config(['$routeProvider',
             $scope.areaSelectedId = areaId;
         };
         $scope.defaultCenter = {
-            lat: 22.52,
-            lng: 114.111,
+            lat: 22.52349854314378,
+            lng: 114.12760734558105,
             zoom: 13
         };
         $scope.displayedMarkers = {};
@@ -494,12 +494,10 @@ config(['$routeProvider',
             });
 
             areaInfos["total"] = {
-                name: "古洞北及粉嶺北",
-                center: {
-                    lat: 22.51065398057207,
-                    lng: 114.11971092224121
-                },
+                name: "古洞北及粉嶺北"
             };
+            areaInfos["total"].center = angular.copy($scope.defaultCenter);
+            // 
 
             areaInfos["total"].news = {};
             areaInfos["total"].sizeByType = {};
