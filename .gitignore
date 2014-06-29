@@ -10,7 +10,3 @@ app/lib/
 node_modules/
 bower_components/
 public/lib/
-dist/scripts
-dist/styles
-dist/templates
-
