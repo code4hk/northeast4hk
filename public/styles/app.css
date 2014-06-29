@@ -12,7 +12,7 @@
     /*width: 50%;*/
   }
 .control-container{
-  margin-top:1rem;
+  /*margin-top:1rem;*/
   margin-bottom:1rem;
 }
 #map {
@@ -31,10 +31,9 @@ z-index: 999;
 margin-top: 1rem;
 margin-bottom:1rem;
 padding-left:1rem;
-
 padding-right:1rem;
 
-bottom:10rem;
+bottom:2rem;
 /*background: rgba(255, 255, 255, 0.9);*/
 background:gray;
 color:white;
@@ -44,7 +43,7 @@ margin-left:1rem;
 
 .slide img{
   max-height:35rem;
-  max-width:60rem;
+  /*max-width:40rem;*/
    vertical-align: middle;
 }
 .slide{
@@ -77,6 +76,18 @@ border-radius: 0;
 }
 .background-modal .modal-footer{
   background:white;
+}
+
+.legend-container{
+text-align:center;
+max-height:40rem;
+max-width:100%;
+width:auto;
+overflow-y:scroll;
+}
+.legend-container img{
+max-width:100%;
+  
 }
 
 .video-container  iframe{

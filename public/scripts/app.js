@@ -9,7 +9,7 @@ angular.module('nt4hk', [
     'leaflet-directive',
     // 'vr.directives.slider',
     'nvd3ChartDirectives',
-    // 'angular-intro',
+    'angular-intro',
     'cgBusy'
 ]).
 config(['$routeProvider',
@@ -28,7 +28,6 @@ config(['$routeProvider',
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
-                console.log(element);
                 //need global binding anyway
                 $document.on("keydown", function(event) {
                     function forceApply() {
@@ -46,7 +45,6 @@ config(['$routeProvider',
                         forceApply();
                     }
                 });
-
                 element.on("$destroy", function() {
                     $document.off("keydown");
                 })
@@ -66,12 +64,12 @@ config(['$routeProvider',
                 $scope.isShowAreaChart = isShow == 'true';
             };
 
-            $scope.status = {
-                isFirstOpen: true,
-                isFirstDisabled: false,
-                isPPChartOpen: false,
-                isNewsOpen: false
-            };
+            // $scope.status = {
+            //     isFirstOpen: true,
+            //     isFirstDisabled: false,
+            //     isPPChartOpen: false,
+            //     isNewsOpen: false
+            // };
 
         }
     ])
@@ -94,6 +92,8 @@ config(['$routeProvider',
                     $scope.activeIndex++;
                 }
             };
+
+                  
 
             var slidesSource = [{
                     image: '/images/slide_2030.jpg',
@@ -186,7 +186,6 @@ config(['$routeProvider',
                     sources: slide.sources
                 });
             })
-            console.log($scope.slides);
 
         }
 
@@ -220,7 +219,6 @@ config(['$routeProvider',
 
 .service('mapDataService', ['$http', 'q',
     function($http, Q) {
-        console.log(Q);
         var _service = {};
         //ODO cache
         _service.getShapesGeoJSON = function() {
@@ -237,7 +235,51 @@ config(['$routeProvider',
 // ])
 .controller('MapCtrl', ['$scope', 'mapDataService', 'spreadSheetDataService', 'leafletData', '$location', '$modal', '$interpolate',
     function($scope, mapDataService, spreadSheetDataService, leafletData, $location, $modal, $interpolate) {
+                    $scope.status = {
+                isFirstOpen: true,
+                isFirstDisabled: false,
+                isPPChartOpen: false,
+                isNewsOpen: false,
+                isLegendOpen:false
+            };
+  $scope.IntroOptions = {
+            steps: [{
+                    element: '#map',
+                    intro: "地圖放大可見分區規劃圖層、右上角可選擇顯示圖層；點擊標記可見相關資料、點擊地區可看該區數據。",
+                    position: 'top'
+                },
+                {
+                    element: '#landuse',
+                    intro: "可見分區／總合土地分佈圖",
+                    position: 'bottom'
+                },
+                {
+                    element: '#housing',
+                    intro: "可見總合公私營房屋分佈",
+                    position: 'bottom'
+                }
+            ],
+            showStepNumbers: false,
+            exitOnOverlayClick: true,
+            showBullets: false,
+            exitOnEsc: true,
+            nextLabel: '<strong>NEXT</strong>',
+            prevLabel: '<span style="color:green">Previous</span>',
+            skipLabel: 'OK',
+            doneLabel: 'OK',
+            overlayOpacity: 0.1
+        };
 
+$scope.onAfterChange = function(targetElement) {
+    console.log("Change Event called");
+    console.log(targetElement);
+    if(targetElement.id==="housing"){
+            $scope.status.isPPChartOpen=true;
+            $scope.$apply();
+    }else{
+
+    }
+};
 
         $scope.openModal = function(size) {
 
@@ -258,6 +300,7 @@ config(['$routeProvider',
             }, function() {});
 
             modalInstance.result.finally(function() {
+                // $scope.startIntro();
                 $location.search('background', null);
             })
         };
@@ -312,6 +355,7 @@ config(['$routeProvider',
 
         $scope.defaults = {
             // crs: 'Simple',
+            reuseTiles:true,
             maxZoom: 17
         }
         $scope.legend = {
@@ -581,6 +625,7 @@ config(['$routeProvider',
                             label: label,
                             details: details,
                             key: key,
+                            zoom:15,
                             sources: [displaySource]
                         }
                         uniqueMakers[locationKey] = marker;

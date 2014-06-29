@@ -1,13 +1,16 @@
-  <div class="map-container col-xs-12 col-md-6">
+  <div ng-intro-options="IntroOptions" ng-intro-method="startIntro" ng-intro-autostart="false" ng-intro-onafterchange="onAfterChange">
+  <div class="map-container col-xs-12 col-md-6" >
   <div class="area-info">{{areaSelected.name}}</div>
    <div class="pull-right control-container">
        <button class="btn btn-default" ng-click="selectArea('s_ktn_1')">古洞北</button>
     <button class="btn btn-default" ng-click="selectArea('s_fln_1')">粉嶺北</button>
     <button class="btn btn-default" ng-click="selectArea('total')">古洞北及粉嶺北</button>
         <button class="btn btn-default" ng-click="selectArea('fln_golf')">粉嶺哥爾夫球場</button>
-        <div><a target="_blank" href="http://www.nentnda.gov.hk/doc/pe/info_digest.pdf" >  規劃圖層來源：新界東北新發展區規劃及工程研究資料摘要</a></div>
+<button class="btn btn-info" ng-click="startIntro()">說明</button>
+
    </div>
    <leaflet  id="map" defaults="defaults" center="defaultCenter" layers="layers" geojson="displayedGeoJSON"  markers="displayedMarkers"> </leaflet>
+        <div class="pull-right"><a target="_blank" href="http://www.nentnda.gov.hk/doc/pe/info_digest.pdf" >  規劃圖層來源：新界東北新發展區規劃及工程研究資料摘要</a></div>
   </div>
   <div cg-busy="loadingInfoPromise" class="info-container col-xs-12 col-md-6">
   <div   ng-controller="MapInfoAccordionCtrl" >
@@ -16,11 +19,12 @@
 <!--     <accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
       This content is straight in the template.
     </accordion-group> -->
-    <accordion-group is-open="status.isFirstOpen">
+    <accordion-group id="landuse" is-open="status.isFirstOpen">
+    <div ng-if="status.isFirstOpen">
      <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
             <button class="btn btn-info" ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
           <accordion-heading>
-            土地用途分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+            土地用途分佈 - {{areaSelected.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
         <!-- <div ng-if="!areaSelected.name">選擇地區</div> -->
         <!-- ng-if="areaSelected.name" -->
@@ -33,7 +37,7 @@
           data="chartByAreaData"
           id="exampleId"
           width="650"
-          height="400"
+          height="350"
           margin="{left:0,top:0,bottom:0,right:0}"
           x="xFunction()"
           y="yFunction()"
@@ -52,19 +56,20 @@
       <div ng-show="!isShowAreaChart">
         待整理
         </div>
+            </div>
     </accordion-group>
-    <accordion-group is-open="status.isPPChartOpen">
+    <accordion-group id="housing" is-open="status.isPPChartOpen">
         <accordion-heading>
            公私營房屋分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
-       
+           <div ng-if="status.isPPChartOpen">
         <div>根據政府城市規劃委員會2013-12-20刊憲<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">規劃大鋼</a>及<a href="http://www.info.gov.hk/gia/general/201402/19/P201402190311.htm" target="_blank">發展局於立法會書面回覆梁國雄議員</a>最新數字</div>
         <div>無每區數字資料，此為古洞北及粉嶺北兩區數字</div>
         <nvd3-pie-chart 
           data="ppChartBySize"
           id="ppChartByArea"
           width="650"
-          height="400"
+          height="350"
           x="xFunction()"
           y="yFunction()"
           showLabels="true"
@@ -78,8 +83,21 @@
       住宅面積計算：住宅(甲、乙、丙類) ＋ 綜合發展區 ＋ 商業╱住宅發展連公共交通交匯處
 
 </div>
+</div>
 
     </accordion-group>
+        <accordion-group id="legend" is-open="status.isLegendOpen">
+         <accordion-heading>
+           規劃圖圖例<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+        </accordion-heading>
+        <div class="legend-container">
+        <a href="/data/legend.jpg">
+          <img  src="/data/legend.jpg"></img>
+        </a>
+        </div>
+          
+    </accordion-group>
+
     <accordion-group ng-if="false" is-open="status.isNewsOpen">
         <accordion-heading>
            相關新聞報導<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
@@ -122,3 +140,4 @@
         </div>
     </script>
 
+  </div>
