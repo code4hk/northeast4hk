@@ -24,6 +24,39 @@ config(['$routeProvider',
         });
     }
 ])
+        .directive('navByKeys', function($document) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs)
+                {
+                    console.log(element);
+                    //need global binding anyway
+                    $document.on("keydown", function (event) {
+                        function forceApply(){
+                            event.preventDefault();
+                            scope.$apply();
+                        }
+                        if(event.which === 37) {
+                            scope.prev();
+                            forceApply();
+                        }else if(event.which === 39 || event.which === 32){
+                            scope.next();
+                            forceApply();
+                        }else  if(event.which ===27){
+                            scope.$dismiss();
+                            forceApply();
+                        }
+                    });
+
+                    element.on("$destroy",function() {
+                        $document.off("keydown");
+                    })
+                    // element.on("keydown", function (event) {
+                    //         console.log('hotkeys');
+                    // });
+                }
+            };
+        })
     .controller('MapInfoAccordionCtrl', ['$scope',
         function($scope) {
             $scope.oneAtATime = true;
@@ -52,7 +85,7 @@ config(['$routeProvider',
                     }
                 };
                 $scope.next = function() {
-                    if ($scope.activeIndex < $scope.slides.length) {
+                    if ($scope.activeIndex < $scope.slides.length -1) {
                         $scope.activeIndex++;
                     }
                 };
@@ -65,7 +98,7 @@ config(['$routeProvider',
                             url:'https://zh.wikipedia.org/wiki/新界東北發展計劃'}]
                     }, {
                         image: 'http://www.nentnda.gov.hk/img/home.jpg',
-                        text: '計劃中政府展開三階段公眾參與：<ul><li>2008年11月－2009年3月：第一階段公眾參與</li><li>2009年11月－2010年3月：第二階段公眾參與</li><li>2012年6月－2012年9月為第：階段公眾參與 <a href="http://www.nentnda.gov.hk/chi/public_3.html#PER" taget="_blank">報告</a></li></ul>',
+                        text: '計劃中政府展開三階段公眾參與：<ul><li>2008年11月－2009年3月：第一階段公眾參與</li><li>2009年11月－2010年3月：第二階段公眾參與</li><li>2012年6月－2012年9月：第三階段公眾參與 <a href="http://www.nentnda.gov.hk/chi/public_3.html#PER" taget="_blank">報告</a></li></ul><br/>2013年7月發表<a href="http://www.nentnda.gov.hk/chi/revised_rodp.html" target="_blank">經修訂的發展方案</a><br />2013年12月20日刊憲<a target="_blank" href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">古洞北</a>及<a target="_blank" href="http://www.ozp.tpb.gov.hk/pdf/s_fln_1_c.pdf">粉嶺北</a>法定圖則',
                         sources:[
                         {
                             ref:'官方活動時間表',
