@@ -64,6 +64,9 @@ margin-left:1rem;
     vertical-align: middle;  /* vertical alignment of the inline element */
     height: 100%;
 }
+.nv-legend-text{
+  font-size:1.2rem;
+}
 
 .background-modal .modal-content{
   background:transparent;
