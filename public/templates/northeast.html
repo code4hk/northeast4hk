@@ -5,11 +5,13 @@
     <button class="btn btn-default" ng-click="selectArea('s_fln_1')">粉嶺北</button>
     <button class="btn btn-default" ng-click="selectArea('total')">古洞北及粉嶺北</button>
         <button class="btn btn-default" ng-click="selectArea('fln_golf')">粉嶺哥爾夫球場</button>
+        <div><a target="_blank" href="http://www.nentnda.gov.hk/doc/pe/info_digest.pdf" >  規劃圖層來源：新界東北新發展區規劃及工程研究資料摘要</a></div>
    </div>
    <leaflet  id="map" defaults="defaults" center="defaultCenter" layers="layers" geojson="displayedGeoJSON"  markers="displayedMarkers"> </leaflet>
   </div>
   <div cg-busy="loadingInfoPromise" class="info-container col-xs-12 col-md-6">
   <div   ng-controller="MapInfoAccordionCtrl" >
+
   <accordion close-others="oneAtATime">
 <!--     <accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
       This content is straight in the template.

@@ -542,11 +542,6 @@ config(['$routeProvider',
 
                 //ng-repeat won't work in $interpolate, DIY
 
-
-
-                // +'<ul><li ng-repeat="source in sources"><a ng-href="{{sourceLink}}">{{sourceName}}</a></li></ul>';
-
-
                 function _getMakerMessage(label, details, sources) {
 
                     var sourceTags = '<ul>';
@@ -704,8 +699,7 @@ config(['$routeProvider',
                     visible: true,
                     layerOptions: {
                         noWrap: true,
-                        opacity: 0.8,
-                        attribution: 'Creative Commons image found <a href="http://www.flickr.com/photos/c32/8025422440/">here</a>'
+                        opacity: 0.8
                     }
                 },
                 s_ktn_1_right: {
@@ -719,8 +713,21 @@ config(['$routeProvider',
                     visible: true,
                     layerOptions: {
                         noWrap: true,
-                        opacity: 0.8,
-                        attribution: 'Creative Commons image found <a href="http://www.flickr.com/photos/c32/8025422440/">here</a>'
+                        opacity: 0.8
+                    }
+                },
+                toxic_layer: {
+                    name: '古洞砒霜分佈地層',
+                    type: 'imageOverlay',
+                    url: '/data/toxicarea_layer.png',
+                    bounds: [
+                        [22.497, 114.083],
+                        [22.5257, 114.126]
+                    ],
+                    visible: true,
+                    layerOptions: {
+                        noWrap: true,
+                        opacity: 0.8
                     }
                 }
             }
