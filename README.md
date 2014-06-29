@@ -14,7 +14,8 @@ npm install -g bower
 bower install
 gulp build
 
+In case bower copy failed, copy ./bower_componenets to public/lib, then run gulp build again
 
-In case bower copy failed, copy ./bower_componenets to public/lib
+3. Then start webserver under dist/, e.g. python -m SimpleHTTPServer 80
 
-3. Then start webserver under public/, e.g. python -m SimpleHTTPServer 80
+4. Should enable Gzip 

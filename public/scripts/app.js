@@ -271,8 +271,6 @@ config(['$routeProvider',
         };
 
 $scope.onAfterChange = function(targetElement) {
-    console.log("Change Event called");
-    console.log(targetElement);
     if(targetElement.id==="housing"){
             $scope.status.isPPChartOpen=true;
             $scope.$apply();
@@ -429,7 +427,6 @@ $scope.onAfterChange = function(targetElement) {
             });
 
             function areaClickCallback(featureSelected) {
-                console.log(featureSelected.properties.id);
                 $scope.areaSelectedId = featureSelected.properties.id;
 
             }
@@ -485,7 +482,6 @@ $scope.onAfterChange = function(targetElement) {
                     if (k === "area_total" || k === "population") {
                         return;
                     }
-                    console.log(k);
                     var size = 0;
                     var percent = 0;
                     var description = "";
@@ -628,7 +624,6 @@ $scope.onAfterChange = function(targetElement) {
                         }
                         uniqueMakers[locationKey] = marker;
                     }
-                    console.log(marker);
 
                 });
 
@@ -649,7 +644,6 @@ $scope.onAfterChange = function(targetElement) {
                 // areaInfos
 
                 // var dataByArea
-                console.log(data);
                 _.each(data, function(aRow) {
                     var areaId = aRow.gsx$areaid.$t;
                     if (!areaId) {
@@ -675,25 +669,17 @@ $scope.onAfterChange = function(targetElement) {
 
                     // }
 
-                    console.log(areaId);
-                    console.log(areaInfos[areaId].sizeByType);
-
-
                 });
 
 
                 //calculating total
                 _generateAreaTotal();
 
-
-
-                console.log(areaInfos);
-
                 $scope.areaSelectedId = "total";
 
 
             }).fail(function(err) {
-                console.log(err);
+                // console.log(err);
             });
 
             $scope.loadingInfoPromise = loadSpreadSheetPromise;
