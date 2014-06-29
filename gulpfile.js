@@ -10,6 +10,10 @@ var sass = require('gulp-sass');
 var bower = require('gulp-bower');
 var usemin = require('gulp-usemin');
 
+var imagemin = require('gulp-imagemin');
+var pngcrush = require('imagemin-pngcrush');
+
+
 var minifyCss = require('gulp-minify-css');
 
 server = lr();
@@ -23,9 +27,30 @@ gulp.task('bower', function() {
 
 });
 
+
+gulp.task('imagemin',function() {
+    gulp.src('public/images/*')
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+            use: [pngcrush()]
+        }))
+        .pipe(gulp.dest('dist/images/'));
+
+      gulp.src('public/data/*png')
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+            use: [pngcrush()]
+        }))
+        .pipe(gulp.dest('dist/data/'));
+
+             
+})
+
 var filesToMove = [
         publicFolder+'data/**/*.*',
-        publicFolder+'images/**/*.*',
+        // publicFolder+'images/**/*.*',
         publicFolder+'templates/**/*.*'
     ];
 
@@ -45,7 +70,7 @@ gulp.task('copy',function() {
 
 })
 
-gulp.task('build',['bower','usemin','copy']);
+gulp.task('build',['bower','usemin','copy','imagemin']);
 //Step:
 // merge-geojson-features
 

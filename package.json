@@ -21,6 +21,7 @@
     "tiny-lr": "~0.0.5",
     "gulp-bower": "0.0.2",
     "gulp-usemin":"*",
-    "gulp-minify-css":"*"
+    "gulp-minify-css":"*",
+    "imagemin-pngcrush":"*"
   }
 }
