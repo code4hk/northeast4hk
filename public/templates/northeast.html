@@ -1,12 +1,12 @@
   <div class="map-container col-xs-12 col-md-6">
   <div class="area-info">{{areaSelected.name}}</div>
-   <leaflet  id="map" defaults="defaults" center="defaultCenter" layers="layers" geojson="displayedGeoJSON"  markers="displayedMarkers"> </leaflet>
-   <div class="control-container">
+   <div class="pull-right control-container">
        <button class="btn btn-default" ng-click="selectArea('s_ktn_1')">古洞北</button>
     <button class="btn btn-default" ng-click="selectArea('s_fln_1')">粉嶺北</button>
     <button class="btn btn-default" ng-click="selectArea('total')">古洞北及粉嶺北</button>
         <button class="btn btn-default" ng-click="selectArea('fln_golf')">粉嶺哥爾夫球場</button>
    </div>
+   <leaflet  id="map" defaults="defaults" center="defaultCenter" layers="layers" geojson="displayedGeoJSON"  markers="displayedMarkers"> </leaflet>
   </div>
   <div cg-busy="loadingInfoPromise" class="info-container col-xs-12 col-md-6">
   <div   ng-controller="MapInfoAccordionCtrl" >
@@ -15,25 +15,28 @@
       This content is straight in the template.
     </accordion-group> -->
     <accordion-group is-open="status.isFirstOpen">
+     <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
+            <button class="btn btn-info" ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
           <accordion-heading>
             土地用途分佈<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
         <!-- <div ng-if="!areaSelected.name">選擇地區</div> -->
         <!-- ng-if="areaSelected.name" -->
-        <div >
+        <div ng-show="isShowAreaChart">
         <h5>總面積：{{areaSelected.sizeByType.area_total.size}} 公頃</h5>
         <div ng-if="areaSelectedId!== 'fln_golf'">
       <nvd3-pie-chart 
           data="chartByAreaData"
           id="exampleId"
-          width="700"
-          height="450"
-          margin="{left:0,top:0,bottom:0,right:50}"
+          width="650"
+          height="400"
+          margin="{left:0,top:0,bottom:0,right:0}"
           x="xFunction()"
           y="yFunction()"
           showLabels="true"
           showLegend="false"
           tooltips="true"
+          pieLabelsOutside="true"
           tooltipcontent="areaChartTooltipFunction()"
           >
           <svg></svg>
@@ -42,6 +45,9 @@
         </div>
       <span ng-show="areaSelected.dataMap.population.size >0">規劃人口：{{areaSelected.dataMap["population"].size | number:0}}</span>
     </div>
+      <div ng-show="!isShowAreaChart">
+        待整理
+        </div>
     </accordion-group>
     <accordion-group is-open="status.isPPChartOpen">
         <accordion-heading>
@@ -87,7 +93,8 @@
   </div>
       <script type="text/ng-template" id="templates/modal-content.html">
       <div nav-by-keys class="slide">
-      <img ng-src="{{slides[activeIndex].image}}"></img>
+      <a ng-href="{{slides[activeIndex].image}}" target="_blank">
+      <img ng-src="{{slides[activeIndex].image}}" ></img></a>
       </div>
       <div class="modal-footer">
         <div class="slide-description" ng-bind-html="slides[activeIndex].text"></div>
