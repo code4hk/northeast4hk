@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="nt4hk">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no,  text/html; charset=UTF-8 ">
+        <title>新界東北地圖</title>
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+                  <link rel="stylesheet" href="styles/lib.css"/>
+       <link rel="stylesheet" href="styles/app.css"/>
+
+        <!--[if lt IE 9]>
+          <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+    </head>
+    
+    <body  >
+        <!--[if lt IE 8]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+<!-- <section style="color:red; text-align:center">This is a work in Progress and All DATA are just mock-up for illustration purpose only</section> -->
+<header class="navbar navbar-default navbar-static-top" role="banner">
+<link rel="stylesheet" type="text/css" href="http://code4hk.github.io/commons/code4hk-badge.css">
+<span class="code4hk-badge left"><a id="code4hk-badge-link" href="http://code4.hk" target="_blank"> Code for Hong Kong </a></span>
+  <div class="container">
+
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">新界東北地圖</a>
+    </div>
+    <nav class="collapse navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="#map">地圖資料</a>
+        </li>
+        <li>
+          <a href="#map?background=1">背景資料</a>
+        </li>
+        <li>
+          <a href="#map?video=1">影片《新界東北發展發生咩事》</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+      <ng-view class="view-animate"></ng-view>
+      <div class="row" style="background:white;color:black;text-align:center; "><span class="pull-right"> 嗚謝<a target="_blank" href="http://www.udomain.com.hk/">UDomain</a>贊助伺服器</span><span class="pull-right ">&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="pull-right"> 若資料錯漏請指正  code4hk@gmail.com  </span> </div>
+
+        <script type='text/javascript' src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="scripts/lib.js"></script>
+        <script type='text/javascript' src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script type='text/javascript' src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
+          <script src="scripts/app.js"></script>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48536294-5', 'code4.hk');
+  ga('send', 'pageview');
+
+</script>
+
+    </body>
+</html>

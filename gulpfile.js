@@ -31,6 +31,7 @@ gulp.task('bower', function() {
 gulp.task('imagemin',function() {
     gulp.src('public/images/*')
         .pipe(imagemin({
+            optimizationLevel:3,
             progressive: true,
             svgoPlugins: [{removeViewBox: false}],
             use: [pngcrush()]
@@ -39,6 +40,7 @@ gulp.task('imagemin',function() {
 
       gulp.src('public/data/*png')
         .pipe(imagemin({
+            optimizationLevel:3,
             progressive: true,
             svgoPlugins: [{removeViewBox: false}],
             use: [pngcrush()]
