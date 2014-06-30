@@ -195,8 +195,11 @@ config(['$routeProvider',
     })
     .service('spreadSheetDataService', ['$http', 'q',
         function($http, Q) {
-            var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/746094374/public/values?alt=json';
-            var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/1670720169/public/values?alt=json';
+            // var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/746094374/public/values?alt=json';
+            // var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/1670720169/public/values?alt=json';
+
+                   var URL = '/data/details.json';
+            var POI_URL = '/data/poi.json';
 
             var _service = {};
 
@@ -516,10 +519,7 @@ $scope.onAfterChange = function(targetElement) {
                         $scope.defaultCenter.zoom = 15;
                     }
                 }
-
                 $scope.chartByAreaData = _getDisplayedAreaChart();
-
-
                 $scope.ppChartBySize = _getDisplayedPublicPrivateChart("size");
                 $scope.ppChartByUnit = _getDisplayedPublicPrivateChart("unit");
             })
@@ -657,6 +657,7 @@ $scope.onAfterChange = function(targetElement) {
                     if (sizeKey.match(/^area_.+/)) {
                         areaInfos[areaId].sizeByType[sizeKey] = {
                             key: aRow.gsx$typelabeltc.$t,
+                            sizeKey:sizeKey,
                             size: aRow.gsx$areasize.$t, //TODO rename as value
                             description: description
                         };

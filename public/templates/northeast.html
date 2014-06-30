@@ -59,7 +59,7 @@
 
         <div ng-show="!isShowAreaChart" class="description-container">
         <table><th>分區</th><th>用途</th>
-        <tr ng-repeat="aType in areaSelected.sizeByType " ng-if="aType.key !=='area_total'" >
+        <tr ng-repeat="aType in areaSelected.sizeByType " ng-if="aType.sizeKey !=='area_total' && aType.description !== ''" >
         <td>{{aType.key}}</td><td class="description">{{aType.description}}<td></td>
         </tr></table>
         </div>
