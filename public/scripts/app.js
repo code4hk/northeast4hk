@@ -497,8 +497,8 @@ $scope.onAfterChange = function(targetElement) {
                     area.push({
                         key: v.key,
                         y: size,
-                        percent: percent,
-                        description: description
+                        percent: percent
+                        // description: description
                     })
                 });
                 return area;

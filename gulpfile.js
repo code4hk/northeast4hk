@@ -72,7 +72,7 @@ gulp.task('copy',function() {
 
 })
 
-gulp.task('build',['bower','usemin','copy','imagemin']);
+gulp.task('build',['bower','usemin','copy']);
 //Step:
 // merge-geojson-features
 

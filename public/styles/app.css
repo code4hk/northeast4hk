@@ -86,9 +86,23 @@ max-width:100%;
 width:auto;
 overflow-y:scroll;
 }
+
 .legend-container img{
 max-width:100%;
 
+}
+
+.description-container {
+  max-height:40rem;
+  overflow-y:scroll;
+}
+
+
+.description-container td.description{
+  width: 75%;
+}
+.description-container tr{
+border: 1px solid black;
 }
 
 .video-container  iframe{
@@ -101,6 +115,8 @@ max-width:100%;
     width: 100%;
 }
 }
+
+
 /*
 div.leaflet-overlay-pane > img:nth-child(2){
   -webkit-transform: translate3d(217px, 264px, 0px) rotate(-6deg) !important;

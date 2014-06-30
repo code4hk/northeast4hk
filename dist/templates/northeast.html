@@ -30,9 +30,12 @@
         <div ng-if="(areaSelectedId!== 'fln_golf' && areaSelectedId!== 's_ne_tkl_14')">
                 <div>根據政府城市規劃委員會2013-12-20刊憲規劃大綱草圖<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">古洞北</a>、<a href="http://www.ozp.tpb.gov.hk/pdf/S_FLN_1_c.pdf">粉嶺北</a><br/>
                   及<a target="_blank" href="http://www.districtcouncils.gov.hk/north/doc/tc/dc_meetings_doc/n_2013_073_ch.pdf"> 北區區議會2013-12-12日討論文件土地用途摘要數字</a></div>
-     <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
-            <button ng-show="false" class="btn btn-info" ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
-        <div ng-show="isShowAreaChart">
+        <div>
+             <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
+                    <button class="btn btn-info" ng-show=" areaSelectedId== 's_fln_1' || areaSelectedId== 's_ktn_1' " ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
+        </div>
+
+        <div  ng-show="isShowAreaChart" style="text-align: center;">
       <nvd3-pie-chart 
           data="chartByAreaData"
           id="exampleId"
@@ -50,11 +53,19 @@
       </nvd3-pie-chart>
           
         </div>
+        <div>
       <span ng-show="areaSelected.dataMap.population.size >0">規劃人口：{{areaSelected.dataMap["population"].size | number:0}}</span>
-    </div>
-      <div ng-show="!isShowAreaChart">
-        待整理
         </div>
+
+        <div ng-show="!isShowAreaChart" class="description-container">
+        <table><th>分區</th><th>用途</th>
+        <tr ng-repeat="aType in areaSelected.sizeByType " ng-if="aType.key !=='area_total'" >
+        <td>{{aType.key}}</td><td class="description">{{aType.description}}<td></td>
+        </tr></table>
+        </div>
+
+        </div>
+
             </div>
     </accordion-group>
     <accordion-group id="housing" is-open="status.isPPChartOpen">
