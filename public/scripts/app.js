@@ -355,7 +355,8 @@ $scope.onAfterChange = function(targetElement) {
         $scope.defaults = {
             // crs: 'Simple',
             reuseTiles:true,
-            maxZoom: 17
+            maxZoom: 17,
+            minZoom:12
         }
         $scope.legend = {
             position: 'bottomleft',

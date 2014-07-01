@@ -13,8 +13,13 @@
   }
 .control-container{
   /*margin-top:1rem;*/
+  position:relative;
   z-index: 999;
   margin-bottom:1rem;
+}
+
+.navbar-static-top{
+  z-index:997;
 }
 #map {
     height: 100%;
