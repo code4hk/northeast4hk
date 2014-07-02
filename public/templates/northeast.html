@@ -20,10 +20,10 @@
       This content is straight in the template.
     </accordion-group> -->
     <accordion-group id="landuse" is-open="status.isFirstOpen">
-    <div ng-if="status.isFirstOpen">
           <accordion-heading>
             土地用途分佈 - {{areaSelected.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
+    <div ng-if="status.isFirstOpen">
         <!-- <div ng-if="!areaSelected.name">選擇地區</div> -->
         <!-- ng-if="areaSelected.name" -->
         <span ng-if="areaSelectedId!== 's_ne_tkl_14'"><h5>總面積：{{areaSelected.sizeByType.area_total.size}} 公頃</h5></span>
@@ -35,7 +35,7 @@
                     <button class="btn btn-info" ng-show=" areaSelectedId== 's_fln_1' || areaSelectedId== 's_ktn_1' " ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
         </div>
 
-        <div  ng-show="isShowAreaChart" style="text-align: center;">
+        <div  ng-if="isShowAreaChart" style="text-align: center;">
       <nvd3-pie-chart 
           data="chartByAreaData"
           id="exampleId"
@@ -49,7 +49,7 @@
           pieLabelsOutside="true"
           tooltipcontent="areaChartTooltipFunction()"
           >
-          <svg></svg>
+          <svg id="chart1"></svg>
       </nvd3-pie-chart>
           
         </div>
@@ -86,8 +86,9 @@
           tooltips="true"
                     tooltipcontent="areaChartTooltipFunction()"
           >
-          <svg></svg>
+          <svg id="chart2"></svg>
       </nvd3-pie-chart>
+
 <div class="clearfix">
       住宅面積計算：住宅(甲、乙、丙類) ＋ 綜合發展區 ＋ 商業╱住宅發展連公共交通交匯處
 

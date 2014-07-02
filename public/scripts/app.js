@@ -24,36 +24,38 @@ config(['$routeProvider',
         });
     }
 ])
-    .directive('navByKeys', ['$document',function($document) {
-        return {
-            restrict: 'A',
-            link: function(scope, element, attrs) {
-                //need global binding anyway
-                $document.on("keydown", function(event) {
-                    function forceApply() {
-                        event.preventDefault();
-                        scope.$apply();
-                    }
-                    if (event.which === 37) {
-                        scope.prev();
-                        forceApply();
-                    } else if (event.which === 39 || event.which === 32) {
-                        scope.next();
-                        forceApply();
-                    } else if (event.which === 27) {
-                        scope.$dismiss();
-                        forceApply();
-                    }
-                });
-                element.on("$destroy", function() {
-                    $document.off("keydown");
-                })
-                // element.on("keydown", function (event) {
-                //         console.log('hotkeys');
-                // });
-            }
-        };
-    }])
+    .directive('navByKeys', ['$document',
+        function($document) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    //need global binding anyway
+                    $document.on("keydown", function(event) {
+                        function forceApply() {
+                            event.preventDefault();
+                            scope.$apply();
+                        }
+                        if (event.which === 37) {
+                            scope.prev();
+                            forceApply();
+                        } else if (event.which === 39 || event.which === 32) {
+                            scope.next();
+                            forceApply();
+                        } else if (event.which === 27) {
+                            scope.$dismiss();
+                            forceApply();
+                        }
+                    });
+                    element.on("$destroy", function() {
+                        $document.off("keydown");
+                    })
+                    // element.on("keydown", function (event) {
+                    //         console.log('hotkeys');
+                    // });
+                }
+            };
+        }
+    ])
     .controller('MapInfoAccordionCtrl', ['$scope',
         function($scope) {
             $scope.oneAtATime = true;
@@ -93,7 +95,7 @@ config(['$routeProvider',
                 }
             };
 
-                  
+
 
             var slidesSource = [{
                     image: '/images/slide_2030.jpg',
@@ -198,7 +200,7 @@ config(['$routeProvider',
             // var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/746094374/public/values?alt=json';
             // var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/1670720169/public/values?alt=json';
 
-                   var URL = '/data/details.json';
+            var URL = '/data/details.json';
             var POI_URL = '/data/poi.json';
 
             var _service = {};
@@ -238,30 +240,27 @@ config(['$routeProvider',
 // ])
 .controller('MapCtrl', ['$scope', 'mapDataService', 'spreadSheetDataService', 'leafletData', '$location', '$modal', '$interpolate',
     function($scope, mapDataService, spreadSheetDataService, leafletData, $location, $modal, $interpolate) {
-                    $scope.status = {
-                isFirstOpen: true,
-                isFirstDisabled: false,
-                isPPChartOpen: false,
-                isNewsOpen: false,
-                isLegendOpen:false
-            };
-  $scope.IntroOptions = {
+        $scope.status = {
+            isFirstOpen: true,
+            isFirstDisabled: false,
+            isPPChartOpen: false,
+            isNewsOpen: false,
+            isLegendOpen: false
+        };
+        $scope.IntroOptions = {
             steps: [{
-                    element: '#map',
-                    intro: "地圖放大可見分區規劃圖層、右上角可選擇顯示圖層；點擊標記可見相關資料、點擊地區可看該區數據。",
-                    position: 'top'
-                },
-                {
-                    element: '#landuse',
-                    intro: "可見分區／總合土地分佈圖",
-                    position: 'bottom'
-                },
-                {
-                    element: '#housing',
-                    intro: "可見總合公私營房屋分佈",
-                    position: 'bottom'
-                }
-            ],
+                element: '#map',
+                intro: "地圖放大可見分區規劃圖層、右上角可選擇顯示圖層；點擊標記可見相關資料、點擊地區可看該區數據。",
+                position: 'top'
+            }, {
+                element: '#landuse',
+                intro: "可見分區／總合土地分佈圖",
+                position: 'bottom'
+            }, {
+                element: '#housing',
+                intro: "可見總合公私營房屋分佈",
+                position: 'bottom'
+            }],
             showStepNumbers: false,
             exitOnOverlayClick: true,
             showBullets: false,
@@ -273,14 +272,14 @@ config(['$routeProvider',
             overlayOpacity: 0.1
         };
 
-$scope.onAfterChange = function(targetElement) {
-    if(targetElement.id==="housing"){
-            $scope.status.isPPChartOpen=true;
-            $scope.$apply();
-    }else{
+        $scope.onAfterChange = function(targetElement) {
+            if (targetElement.id === "housing") {
+                $scope.status.isPPChartOpen = true;
+                $scope.$apply();
+            } else {
 
-    }
-};
+            }
+        };
 
         $scope.openModal = function() {
 
@@ -354,9 +353,9 @@ $scope.onAfterChange = function(targetElement) {
 
         $scope.defaults = {
             // crs: 'Simple',
-            reuseTiles:true,
+            reuseTiles: true,
             maxZoom: 17,
-            minZoom:12
+            minZoom: 12
         }
         $scope.legend = {
             position: 'bottomleft',
@@ -511,6 +510,7 @@ $scope.onAfterChange = function(targetElement) {
                 if (!newVal) {
                     return;
                 }
+                console.log('areaSelectedId');
                 $scope.areaSelected = areaInfos[$scope.areaSelectedId];
                 if ($scope.areaSelected.center) {
                     $scope.defaultCenter = angular.copy($scope.areaSelected.center);
@@ -524,7 +524,6 @@ $scope.onAfterChange = function(targetElement) {
                 $scope.ppChartBySize = _getDisplayedPublicPrivateChart("size");
                 $scope.ppChartByUnit = _getDisplayedPublicPrivateChart("unit");
             })
-            $scope.chartByAreaData = [];
 
             _.each(areaInfos, function(v, k) {
                 areaInfos[k].news = {};
@@ -620,7 +619,7 @@ $scope.onAfterChange = function(targetElement) {
                             label: label,
                             details: details,
                             key: key,
-                            zoom:15,
+                            zoom: 15,
                             sources: [displaySource]
                         }
                         uniqueMakers[locationKey] = marker;
@@ -658,7 +657,7 @@ $scope.onAfterChange = function(targetElement) {
                     if (sizeKey.match(/^area_.+/)) {
                         areaInfos[areaId].sizeByType[sizeKey] = {
                             key: aRow.gsx$typelabeltc.$t,
-                            sizeKey:sizeKey,
+                            sizeKey: sizeKey,
                             size: aRow.gsx$areasize.$t, //TODO rename as value
                             description: description
                         };
