@@ -121,6 +121,9 @@ border: 1px solid black;
 }
 }
 
+.menu-buttons{
+  padding-top: 15px;padding-bottom: 15px;line-height: 20px;
+}
 
 /*
 div.leaflet-overlay-pane > img:nth-child(2){
