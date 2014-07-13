@@ -1,4 +1,4 @@
-  <div ng-intro-options="IntroOptions" ng-intro-method="startIntro" ng-intro-autostart="false" ng-intro-onafterchange="onAfterChange">
+<div ng-intro-options="IntroOptions" ng-intro-method="startIntro" ng-intro-autostart="false" ng-intro-onafterchange="onAfterChange">
   <div class="map-container col-xs-12 col-md-6" >
   <div class="area-info">{{areaSelected.name}}</div>
    <div class="pull-right control-container">
@@ -6,6 +6,7 @@
     <button class="btn btn-default" ng-click="selectArea('s_fln_1')">粉嶺北</button>
     <button class="btn btn-default" ng-click="selectArea('total')">古洞北及粉嶺北</button>
         <button class="btn btn-default" ng-click="selectArea('fln_golf')">粉嶺哥爾夫球場</button>
+                <button class="btn btn-default" ng-click="selectArea('lmc_loop')">落馬洲河套區</button>
 <button class="btn btn-info" ng-click="startIntro()">說明</button>
 
    </div>
@@ -20,45 +21,49 @@
       This content is straight in the template.
     </accordion-group> -->
     <accordion-group id="landuse" is-open="status.isFirstOpen">
-          <accordion-heading>
+      <accordion-heading>
             土地用途分佈 - {{areaSelected.name}}<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-        </accordion-heading>
-        <!-- ng-if="status.isFirstOpen" -->
-    <div >
-        <!-- <div ng-if="!areaSelected.name">選擇地區</div> -->
-        <!-- ng-if="areaSelected.name" -->
+      </accordion-heading>
+      <div >
         <span ng-show="areaSelectedId!== 's_ne_tkl_14'"><h5>總面積：{{areaSelected.sizeByType.area_total.size}} 公頃</h5></span>
-        <div ng-show="(areaSelectedId!== 'fln_golf' && areaSelectedId!== 's_ne_tkl_14')">
-                <div>根據政府城市規劃委員會2013-12-20刊憲規劃大綱草圖<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">古洞北</a>、<a href="http://www.ozp.tpb.gov.hk/pdf/S_FLN_1_c.pdf">粉嶺北</a><br/>
-                  及<a target="_blank" href="http://www.districtcouncils.gov.hk/north/doc/tc/dc_meetings_doc/n_2013_073_ch.pdf"> 北區區議會2013-12-12日討論文件土地用途摘要數字</a></div>
-        <div>
-             <button class="btn btn-info" ng-class="{active: isShowAreaChart}" ng-click="showAreaChart('true')">分佈圖表</button>
-                    <button class="btn btn-info" ng-show=" areaSelectedId== 's_fln_1' || areaSelectedId== 's_ktn_1' " ng-class="{active: !isShowAreaChart}"  ng-click="showAreaChart('false')">土地用途資料</button>
+        <div ng-show="(areaSelectedId === 'lmc_loop')">
+          根據2013年7月公佈<a target="_blank" href="http://www.lmcloop.gov.hk/chi/new.html">規劃署發展規劃及工程研究</a>，<a target="_blank" href="http://www.lmcloop.gov.hk/pdf/Stage2_ExPanels/PER2/T-LMCL_S3_Digest_PREVIEW-FINAL.pdf">資料摘要連結</a>
+           <div >以樓面面積面積計算</div>
+        </div> 
+        <div ng-show="(areaSelectedId=== 's_ktn_1' || areaSelectedId=== 's_fln_1' || areaSelectedId=== 'total')">
+          <div>根據政府城市規劃委員會2013-12-20刊憲規劃大綱草圖<a href="http://www.ozp.tpb.gov.hk/pdf/s_ktn_1_c.pdf">古洞北</a>、<a href="http://www.ozp.tpb.gov.hk/pdf/S_FLN_1_c.pdf">粉嶺北</a><br/>
+            及<a target="_blank" href="http://www.districtcouncils.gov.hk/north/doc/tc/dc_meetings_doc/n_2013_073_ch.pdf"> 北區區議會2013-12-12日討論文件土地用途摘要數字</a>
+          </div>
         </div>
 
-        <div  ng-show="isShowAreaChart" style="text-align: center;">
-      <nvd3-pie-chart 
-          data="chartByAreaData"
-          id="exampleId"
-          height="350"
-          margin="{left:0,top:0,bottom:0,right:0}"
-          x="xFunction()"
-          y="yFunction()"
-          showLabels="true"
-          showLegend="false"
-          tooltips="true"
-          pieLabelsOutside="true"
-          tooltipcontent="areaChartTooltipFunction()"
-          >
-          <svg id="chart1"></svg>
-      </nvd3-pie-chart>
-          
-        </div>
         <div>
-      <span ng-show="areaSelected.dataMap.population.size >0">規劃人口：{{areaSelected.dataMap["population"].size | number:0}}</span>
+             <button class="btn btn-info" ng-class="{active: areaIndex===0}" ng-click="showArea(0)">分佈圖表</button>
+             <button class="btn btn-info" ng-show=" areaSelectedId== 's_fln_1' || areaSelectedId== 's_ktn_1' " ng-class="{active: areaIndex===1}"  ng-click="showArea(1)">土地用途資料</button>
+             <button ng-show="(areaSelectedId=== 'lmc_loop')" class="btn btn-info" ng-class="{active: !areaIndex===2}" ng-click="showArea(2)">發展概要</button>
         </div>
 
-        <div ng-show="!isShowAreaChart" class="description-container">
+        <div  ng-show="areaIndex===0" style="text-align: center;">
+          <nvd3-pie-chart 
+              data="chartByAreaData"
+              id="exampleId"
+              height="350"
+              margin="{left:0,top:0,bottom:0,right:0}"
+              x="xFunction()"
+              y="yFunction()"
+              showLabels="true"
+              showLegend="false"
+              tooltips="true"
+              pieLabelsOutside="true"
+              tooltipcontent="areaChartTooltipFunction()"
+              >
+              <svg id="chart1"></svg>
+          </nvd3-pie-chart>
+        </div>
+        <div>
+          <span ng-show="areaSelected.dataMap.population.size >0">規劃人口：{{areaSelected.dataMap["population"].size | number:0}}</span>
+        </div>
+
+        <div ng-show="areaIndex===1" class="description-container">
         <table><th>分區</th><th>用途</th>
         <tr ng-repeat="aType in areaSelected.sizeByType " ng-if="aType.sizeKey !=='area_total' && aType.description !== ''" >
         <td>{{aType.key}}</td><td class="description">{{aType.description}}<td></td>
@@ -67,7 +72,6 @@
 
         </div>
 
-            </div>
     </accordion-group>
     <accordion-group id="housing" is-open="status.isPPChartOpen">
         <accordion-heading>

@@ -60,10 +60,9 @@ config(['$routeProvider',
         function($scope) {
             $scope.oneAtATime = true;
 
-            $scope.isShowAreaChart = true;
-
-            $scope.showAreaChart = function(isShow) {
-                $scope.isShowAreaChart = isShow == 'true';
+            $scope.areaIndex = 0;
+            $scope.showArea = function(index) {
+                 $scope.areaIndex = index;
             };
 
             // $scope.status = {
@@ -178,6 +177,15 @@ config(['$routeProvider',
                         url: 'https://www.youtube.com/watch?v=BKOmjirCPls'
 
                     }]
+                },
+                {
+                    image: '/images/border_river.gif',
+                    text: '2014年7月13日，蘋果日報報導根據政府最新密件，港府與深圳就落馬洲河套區面積約88公頃土地業權有爭議，而項目的工程研究撥款、環評、甚至前期工程招標早已完成。團體質疑深圳隨時可向港方收回河套區，不可能當作香港土地發展；而發展局從未對外公佈相關問題，只宣稱以2020年投入運作為目標。落馬洲河套區面積約88公頃，原位處深圳境內；1997年深圳河治理工程將河道拉直後，河套區便落入深圳河以南的香港境內。其後深圳市政府宣稱擁有河套區業權，港府則指河套區屬香港範圍土地，應由港方管理。07年，時任特首曾蔭權與深圳達成協議，由兩地官員組成「港深邊界區發展聯合專責小組」，以「共同開發、共享成果」原則合作發展河套區；又合資進行土地勘測及工程研究，港方出資3,370萬元，由財委會撥款，最後決定將河套區發展成大學科研城。環境評估報告及前期工程招標也分別於去年尾及2014年初完成，項目隨時可展開。',
+                    sources: [ {
+                        ref: '蘋果日報圖片及報導',
+                        url: 'http://hk.apple.nextmedia.com/news/art/20140713/18798680'
+
+                    }]
                 }
             ];
 
@@ -197,11 +205,11 @@ config(['$routeProvider',
     })
     .service('spreadSheetDataService', ['$http', 'q',
         function($http, Q) {
-            // var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/746094374/public/values?alt=json';
-            // var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/1670720169/public/values?alt=json';
+            var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/4/public/values?alt=json';
+            var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/2/public/values?alt=json';
 
-            var URL = '/data/details.json';
-            var POI_URL = '/data/poi.json';
+            // var URL = '/data/details.json';
+            // var POI_URL = '/data/poi.json';
 
             var _service = {};
 
@@ -402,6 +410,10 @@ config(['$routeProvider',
                 "s_ne_tkl_14": {
                     name: "坪輋（重新規劃）",
                     color: "#f86767"
+                },
+                "lmc_loop":{
+                    name:"落馬洲河套地區",
+                    color:"brown"
                 }
             };
 
@@ -434,9 +446,14 @@ config(['$routeProvider',
 
             }
             $scope.areaChartTooltipFunction = function() {
-                return function(key, x, obj, e, graph) {
-                    return '<h4>' + key + '</h4>' +
-                        '<p>' + x + ' 公頃 ' + obj.point.percent + '%</p>';
+
+            return function(key, x, obj, e, graph) {
+                var unit = ' 公頃 ';
+                if ($scope.areaSelectedId === 'lmc_loop'){
+                    unit = ' 平方米 ';
+                }
+            return '<h4>' + key + '</h4>' +
+                    '<p>' + x + unit + obj.point.percent + '%</p>';
                 }
 
             };
@@ -447,6 +464,7 @@ config(['$routeProvider',
                 }
 
             };
+
 
             var HOUSING_TYPES = ["sub_public_mix", "sub", "private"];
 
@@ -479,10 +497,10 @@ config(['$routeProvider',
                 return area;
             }
 
-            function _getDisplayedAreaChart() {
+            function _getDisplayedAreaChart(total) {
                 var area = [];
                 _.each($scope.areaSelected.sizeByType, function(v, k) {
-                    if (k === "area_total" || k === "population") {
+                    if (k === "area_total" || k === "population" || k === "area_gross_floor_total") {
                         return;
                     }
                     var size = 0;
@@ -492,7 +510,7 @@ config(['$routeProvider',
                         size = parseFloat(v.size).toFixed(2);
                     }
                     if (size > 0) {
-                        percent = (size / $scope.areaSelected.sizeByType["area_total"].size * 100).toFixed(2);
+                        percent = (size / total * 100).toFixed(2);
                     }
                     if (v.description) {
                         description = v.description;
@@ -520,7 +538,14 @@ config(['$routeProvider',
                         $scope.defaultCenter.zoom = 15;
                     }
                 }
-                $scope.chartByAreaData = _getDisplayedAreaChart();
+                var total=1;
+                if($scope.areaSelectedId!=='lmc_loop'){
+                    total = $scope.areaSelected.sizeByType["area_total"].size;
+                }else{
+                    total = $scope.areaSelected.sizeByType["area_gross_floor_total"].size;
+                }
+
+                $scope.chartByAreaData = _getDisplayedAreaChart(total);
                 $scope.ppChartBySize = _getDisplayedPublicPrivateChart("size");
                 $scope.ppChartByUnit = _getDisplayedPublicPrivateChart("unit");
             })
