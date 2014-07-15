@@ -413,7 +413,8 @@ config(['$routeProvider',
                 },
                 "lmc_loop":{
                     name:"落馬洲河套地區",
-                    color:"brown"
+                    color:"brown",
+                    opacity:0
                 }
             };
 
