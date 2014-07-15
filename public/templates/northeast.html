@@ -59,8 +59,15 @@
               <svg id="chart1"></svg>
           </nvd3-pie-chart>
         </div>
+        <div ng-show="areaIndex===2 && areaSelectedId=== 'lmc_loop'">
+            <br/>  
+            河套地區發展以高等教育為主，輔以高新科技研發和文化創意產業用途。<br/>
+            <b>規劃最高學生人數：</b>{{areaSelected.dataMap["max_students"].size | number:0}}<br/>
+            <b>規劃就業機會(約)：</b>{{areaSelected.dataMap["max_jobs"].size | number:0}}
+        </div>
+
         <div>
-          <span ng-show="areaSelected.dataMap.population.size >0">規劃人口：{{areaSelected.dataMap["population"].size | number:0}}</span>
+          <span ng-show="areaSelected.dataMap.population.size >0"><b>規劃人口：</b>{{areaSelected.dataMap["population"].size | number:0}}</span>
         </div>
 
         <div ng-show="areaIndex===1" class="description-container">
