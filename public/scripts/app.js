@@ -205,11 +205,11 @@ config(['$routeProvider',
     })
     .service('spreadSheetDataService', ['$http', 'q',
         function($http, Q) {
-            var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/4/public/values?alt=json';
-            var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/2/public/values?alt=json';
+            // var URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/4/public/values?alt=json';
+            // var POI_URL = 'https://spreadsheets.google.com/feeds/list/1wgGlXYbGUNIBu4TX3UAC334iI1KwwGbynZlF3-NNv4s/2/public/values?alt=json';
 
-            // var URL = '/data/details.json';
-            // var POI_URL = '/data/poi.json';
+            var URL = '/data/details.json';
+            var POI_URL = '/data/poi.json';
 
             var _service = {};
 
